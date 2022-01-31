@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+  api:
+    build: .
+    container_name: nodejs-api-container
+    restart: always
+    ports:
+      - "3350:3350"
+    env_file: 
+      - enviroment/.env  
+    environment:
+      - MYSQL_LP_USER=${MYSQL_LP_USER}
+      - MYSQL_LP_PASS=${MYSQL_LP_PASS}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_NAME=${DB_NAME}
+      - NODE_PORT=${NODE_PORT}
+    networks:
+      - backend
+
+networks:
+  backend:
