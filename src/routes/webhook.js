@@ -2,25 +2,43 @@ const express = require('express');
 const routerWebHook = express.Router();
 const axios = require('axios');
 
+const utils = require('../utils/utils.js');
+
+const mysqlConnection = require('../database.js');
+
 routerWebHook.get('/webhook', (req, resp) => {
-    getNewPublicIp(resp);
+    utils.getNewPublicIp().then( (x)=> {
+        resp.send(x);
+    });
 });
 
-async function getNewPublicIp(resp) {
-    await axios.get('https://ifconfig.me')
-        .then(respon => {
-            console.log(respon.data);
-            ip = respon.data;
-            axios.post(process.env.SLACK_WEBHOOK, {
-                text: `hello word from Node JS API, public IP: ${ip}`
-            }).then(res => {
-                console.log(`statusCode: ${res.status}`);
-                resp.send({ message: 'message sent to webhook' });
-            });
-        }).catch(err => {
-            throw err;
-        });
-}
+routerWebHook.get('/changed/public-ip/:ip', (req, res) => {
+    const { ip } = req.params;
+    const updated_ip_configuration = `UPDATE server_config.public_ip SET ? WHERE public_ip = '${ip}'`
+    const values = { 'public_ip.changed_ip': 1 }
+
+    mysqlConnection.query(updated_ip_configuration, values, (error, results) => {
+        if (error) throw error;
+        if (results.length > 0) {
+            res.json(results);
+        } else {
+            res.json({ 'message': 'not results' });
+        }
+    })
+});
+
+routerWebHook.get('/current/public-ip', (req, res) => {
+    const config_server_select = 'SELECT * FROM server_config.public_ip';
+
+    mysqlConnection.query(config_server_select, (error, results) => {
+        if (error) throw error;
+        if (results.length > 0) {
+            res.json(results);
+        } else {
+            res.json({ 'message': 'not results' });
+        }
+    })
+});
 
 
 module.exports = routerWebHook;
