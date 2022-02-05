@@ -7,7 +7,7 @@ const utils = require('../utils/utils.js');
 const mysqlConnection = require('../database.js');
 
 routerWebHook.get('/webhook', (req, resp) => {
-    utils.getNewPublicIp().then( (x)=> {
+    utils.getNewPublicIp().then((x) => {
         resp.send(x);
     });
 });
@@ -28,16 +28,15 @@ routerWebHook.get('/changed/public-ip/:ip', (req, res) => {
 });
 
 routerWebHook.get('/current/public-ip', (req, res) => {
-    const config_server_select = 'SELECT * FROM server_config.public_ip';
-
-    mysqlConnection.query(config_server_select, (error, results) => {
-        if (error) throw error;
+    console.log('entré en el query');
+    mysqlConnection.query(utils.config_server_select, (error, results) => {
+        if (error) {throw error};
         if (results.length > 0) {
-            res.json(results);
+            return results;
         } else {
-            res.json({ 'message': 'not results' });
+            return { 'message': 'not results' };
         }
-    })
+    });
 });
 
 

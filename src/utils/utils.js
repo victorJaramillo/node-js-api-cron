@@ -1,4 +1,7 @@
 const axios = require('axios');
+const { response } = require('express');
+
+const mysqlConnection = require('../database.js');
 
 var getNewPublicIp = async function () {
     await axios.get('https://ifconfig.me')
@@ -7,7 +10,7 @@ var getNewPublicIp = async function () {
         }).catch(err => {
             throw err;
         });
-    return {'public_ip':ip};
+    return { 'public_ip': ip };
 }
 
 const sendSlackNotification = async function () {
@@ -22,4 +25,7 @@ const sendSlackNotification = async function () {
     return response;
 }
 
-module.exports = { getNewPublicIp, sendSlackNotification };
+const config_server_select = 'SELECT * FROM server_config.public_ip';
+
+
+module.exports = { getNewPublicIp, sendSlackNotification, config_server_select };
