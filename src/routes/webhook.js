@@ -14,27 +14,36 @@ routerWebHook.get('/webhook', (req, resp) => {
 
 routerWebHook.get('/changed/public-ip/:ip', (req, res) => {
     const { ip } = req.params;
-    const updated_ip_configuration = `UPDATE server_config.public_ip SET ? WHERE public_ip = '${ip}'`
+    
     const values = { 'public_ip.changed_ip': 1 }
 
-    mysqlConnection.query(updated_ip_configuration, values, (error, results) => {
+    mysqlConnection.query(utils.updated_ip_configuration(ip), values, (error, results) => {
         if (error) throw error;
-        if (results.length > 0) {
-            res.json(results);
-        } else {
-            res.json({ 'message': 'not results' });
+        else {
+            res.json({ 'message': 'updated successfully' });
         }
     })
 });
 
 routerWebHook.get('/current/public-ip', (req, res) => {
-    console.log('entré en el query');
     mysqlConnection.query(utils.config_server_select, (error, results) => {
         if (error) {throw error};
         if (results.length > 0) {
-            return results;
+            res.send(results);
         } else {
-            return { 'message': 'not results' };
+            res.send( { 'message': 'not results' });
+        }
+    });
+});
+
+routerWebHook.get('/current/public-ip/:ip', (req, res) => {
+    const { ip } = req.params;
+    mysqlConnection.query(utils.config_server_select_by_ip(ip), (error, results) => {
+        if (error) {throw error};
+        if (results.length > 0) {
+            res.send(results[0]);
+        } else {
+            res.send( { 'message': 'not results' });
         }
     });
 });

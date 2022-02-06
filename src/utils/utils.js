@@ -27,5 +27,19 @@ const sendSlackNotification = async function () {
 
 const config_server_select = 'SELECT * FROM server_config.public_ip';
 
+const config_server_select_by_ip = function (ip) {
+    return config_server_select + ` WHERE public_ip ='${ip}'`
+}
 
-module.exports = { getNewPublicIp, sendSlackNotification, config_server_select };
+const updated_ip_configuration = function (ip) {
+    return `UPDATE server_config.public_ip SET ? WHERE public_ip.public_ip = '${ip}'`
+}
+
+
+module.exports = { 
+    getNewPublicIp, 
+    sendSlackNotification, 
+    config_server_select, 
+    updated_ip_configuration,
+    config_server_select_by_ip
+};
