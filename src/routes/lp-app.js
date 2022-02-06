@@ -3,10 +3,11 @@ const routerApis = express.Router();
 
 const mysqlConnection = require('../database.js');
 
-const query_select = 'select * from url_videos_reuniones';
+const utils = require('../utils/utils.js');
+
 
 routerApis.get('/all', (req, res) => {
-    const select = query_select;
+    const select = utils.query_lp_videos_select;
     mysqlConnection.query(select, (error, results) => {
         if (error) throw error;
         if (results.length > 0) {
@@ -19,7 +20,7 @@ routerApis.get('/all', (req, res) => {
 
 routerApis.get('/all/:id', (req, res) => {
     var { id } = req.params;
-    const select = query_select + ` where id = ${id}`;
+    const select = utils.query_lp_videos_select + ` WHERE id = ${id}`;
     mysqlConnection.query(select, (error, results) => {
         if (error) throw error;
         if (results.length > 0) {
@@ -31,14 +32,12 @@ routerApis.get('/all/:id', (req, res) => {
 });
 
 routerApis.post('/add', (req, res) => {
-    const insert = `INSERT INTO url_videos_reuniones SET ?`;
-
     const values = {
         tema_video: req.body.tema_video,
         url_video: req.body.url_video
     }
     console.log(JSON.stringify(req.body.url_video));
-    mysqlConnection.query(insert, values, (error) => {
+    mysqlConnection.query(utils.insert_lp_videos, values, (error) => {
         if (error) throw error;
         else {
             res.json({
@@ -51,13 +50,12 @@ routerApis.post('/add', (req, res) => {
 
 routerApis.put('/update/:id', (req, res) => {
     const { id } = req.params;
-    const update = `UPDATE url_videos_reuniones SET ? WHERE id = ${id}`;
     const values = {
         tema_video: req.body.tema_video,
         url_video: req.body.url_video
     }
     console.log(JSON.stringify(req.body.url_video));
-    mysqlConnection.query(update, values, (error) => {
+    mysqlConnection.query(utils.update_lp_videos(id), values, (error) => {
         if (error) throw error;
         else {
             res.json({
