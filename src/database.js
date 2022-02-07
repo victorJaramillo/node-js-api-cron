@@ -14,7 +14,7 @@ mysqlConnection.connect((error) => {
         console.log(process.env);
         throw error;
     } else {
-        console.log('Data base connected');
+        console.log(`Connected to database`);
     }
 });
 
