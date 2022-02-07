@@ -13,15 +13,15 @@ var getNewPublicIp = async function () {
     return { 'public_ip': ip };
 }
 
-const sendSlackNotification = async function () {
+const sendSlackNotification = async function (ip) {
+    var response = {};
     await axios.post(process.env.SLACK_WEBHOOK, {
-        text: `hello word from Node JS API`
+        text: `Se ha cambiado la ip publica del servidor, la nueva IP es ${ip}`
     }).then(res => {
         response = { message: `message sent to webhook with statusCode: ${res.status}` };
     }).catch(err => {
         throw err
     })
-    console.log('response => ', response);
     return response;
 }
 
@@ -41,7 +41,9 @@ const updated_ip_configuration = function (ip) {
 
 const update_lp_videos = function(id) {
     return `UPDATE url_videos_reuniones SET ? WHERE id = ${id}`;
-} 
+}
+
+const insert_ip_configuration = `INSERT server_config.public_ip SET ?`;
 
 module.exports = { 
     getNewPublicIp, 
@@ -52,4 +54,5 @@ module.exports = {
     config_server_select, 
     query_lp_videos_select,
     insert_lp_videos,
+    insert_ip_configuration
 };
