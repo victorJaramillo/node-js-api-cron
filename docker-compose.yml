@@ -18,6 +18,19 @@ services:
       - NODE_PORT=${NODE_PORT}
     networks:
       - backend
-
+    depends_on:
+      - mysql_db
+  mysql_db:
+    image: mysql:5.7
+    container_name: mysql_db
+    ports:
+      - '3306:3306'
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+    volumes:
+      - $HOME/mysql/mysql57-data/_data:/var/lib/mysql
+    networks:
+      - backend
 networks:
   backend:
