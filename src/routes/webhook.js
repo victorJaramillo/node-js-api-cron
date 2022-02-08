@@ -1,13 +1,12 @@
 const express = require('express');
 const routerWebHook = express.Router();
-const axios = require('axios');
 
 const utils = require('../utils/utils.js');
 
 const mysqlConnection = require('../database.js');
 
 routerWebHook.get('/webhook', (req, resp) => {
-    utils.sendSlackNotification('x.public_ip').then((data) => {
+    utils.sendSlackNotification('PRUEBA').then((data) => {
         resp.send((data))
     });
 });

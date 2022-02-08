@@ -15,8 +15,18 @@ var getNewPublicIp = async function () {
 
 const sendSlackNotification = async function (ip) {
     var response = {};
+    const text = `Se ha cambiado la ip publica del servidor, la nueva IP es *${ip}*`;
     await axios.post(process.env.SLACK_WEBHOOK, {
-        text: `Se ha cambiado la ip publica del servidor, la nueva IP es ${ip}`
+        text: 'Nueva IP de servidor',
+        blocks: [
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": text
+                }
+            }
+        ]
     }).then(res => {
         response = { message: `message sent to webhook with statusCode: ${res.status}` };
     }).catch(err => {
