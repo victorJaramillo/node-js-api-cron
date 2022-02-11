@@ -11,6 +11,7 @@ routerWebHook.get('/webhook', (req, resp) => {
     });
 });
 
+
 routerWebHook.get('/changed/public-ip/:ip', (req, res) => {
     const { ip } = req.params;
 
@@ -25,7 +26,7 @@ routerWebHook.get('/changed/public-ip/:ip', (req, res) => {
 });
 
 routerWebHook.get('/current/public-ip', (req, res) => {
-    utils.getNewPublicIp().then( (x) => {
+    utils.getNewPublicIp().then((x) => {
         res.send(x);
     })
 });
