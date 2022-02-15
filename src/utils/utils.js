@@ -28,7 +28,7 @@ const sendNewIpSlackNotification = async function (ip) {
             }
         ]
     }).then(res => {
-        response = { message: `message sent to webhook with statusCode: ${res.status}` };
+        response = slack_message_response(res.status) ;
     }).catch(err => {
         throw err
     })
@@ -40,11 +40,15 @@ const sendTextSlackNotification = async function (text) {
     await axios.post(process.env.SLACK_WEBHOOK, {
         text: text
     }).then(res => {
-        response = { message: `message sent to webhook with statusCode: ${res.status}` };
+        response = slack_message_response(res.status) ;
     }).catch(err => {
         throw err
     })
     return response;
+}
+
+const slack_message_response = function (statusCode){
+    return { message: `message sent to webhook with statusCode: ${statusCode}` };
 }
 
 const get_external_api = async function(endpoint){

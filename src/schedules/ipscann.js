@@ -66,10 +66,10 @@ const update_godaddy_records = function (new_ip) {
                     utils.put_external_api_with_security(dns_records_endoint, array_dns_records, authorization).then((res, err) => {
                         if (err) { throw err }
                         else {
+                            console.log(`Los registros de DNS, han sido actualizados correctamente, status: ${res}`);
                             utils.sendTextSlackNotification(`Los registros de DNS, han sido actualizados correctamente, status: ${res}`)
                         }
                     });
-                    console.log(array_dns_records);
                     response = (array_dns_records);
                 })
             });

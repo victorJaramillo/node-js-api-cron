@@ -6,7 +6,7 @@ const utils = require('../utils/utils.js');
 const mysqlConnection = require('../database.js');
 
 routerWebHook.get('/webhook', (req, resp) => {
-    utils.sendSlackNotification('PRUEBA').then((data) => {
+    utils.sendTextSlackNotification('PRUEBA').then((data) => {
         resp.send((data))
     });
 });
