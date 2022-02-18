@@ -121,7 +121,7 @@ const select_enabled_services = `SELECT service_name FROM server_config.enabled_
 
 const create_new_user = `INSERT server_config.api_users SET ?`;
 
-const find_user = function(email, password){
+const find_user = function(email){
     return `SELECT * FROM server_config.api_users WHERE email = '${email}'`;
 }
 

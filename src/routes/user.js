@@ -17,11 +17,18 @@ router.post("/create", [auth], async (req, res) => {
         const response_message = { message: 'email or password is empty' };
         res.status(400).send(response_message)
     } else {
-        const hashed_password = await utils.encode_hash_text(req.body.password);
-        const user = { email: req.body.email, password: hashed_password };
-        const response = await mysqlConnection.query(utils.create_new_user, user);
-        if (response) {
-            res.status(201).send({ message: 'user created' });
+        // agregar lógica de verificación de email existente en la base de datos
+        const find_user_query = utils.find_user(body.email);
+        const user = await mysqlConnection.query(find_user_query);
+        if(!user[0]){
+            const hashed_password = await utils.encode_hash_text(req.body.password);
+            const user = { email: req.body.email, password: hashed_password };
+            const response = await mysqlConnection.query(utils.create_new_user, user);
+            if (response) {
+                res.status(201).send({ message: 'user created' });
+            }
+        }else{
+            res.status(400).send({ message: 'user already exist' });
         }
     }
 })
