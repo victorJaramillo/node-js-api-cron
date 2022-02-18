@@ -5,14 +5,16 @@ const utils = require('../utils/utils.js');
 
 const mysqlConnection = require('../database.js');
 
-routerWebHook.get('/webhook', (req, resp) => {
+const auth = require("../middleware/auth");
+
+routerWebHook.get('/webhook', [auth], (req, resp) => {
     utils.sendTextSlackNotification('PRUEBA').then((data) => {
         resp.send((data))
     });
 });
 
 
-routerWebHook.get('/changed/public-ip/:ip', (req, res) => {
+routerWebHook.get('/changed/public-ip/:ip', [auth], (req, res) => {
     const { ip } = req.params;
 
     const values = { 'public_ip.changed_ip': 1 }
@@ -25,13 +27,13 @@ routerWebHook.get('/changed/public-ip/:ip', (req, res) => {
     })
 });
 
-routerWebHook.get('/current/public-ip', (req, res) => {
+routerWebHook.get('/current/public-ip', [auth], (req, res) => {
     utils.getNewPublicIp().then((x) => {
         res.send(x);
     })
 });
 
-routerWebHook.get('/current/public-ip/:ip', (req, res) => {
+routerWebHook.get('/current/public-ip/:ip', [auth], (req, res) => {
     const { ip } = req.params;
     mysqlConnection.query(utils.config_server_select_by_ip(ip), (error, results) => {
         if (error) { throw error };

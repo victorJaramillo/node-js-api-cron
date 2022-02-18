@@ -3,10 +3,12 @@ const routerApis = express.Router();
 
 const mysqlConnection = require('../database.js');
 
+const auth = require("../middleware/auth");
+
 const utils = require('../utils/utils.js');
 
 
-routerApis.get('/all', (req, res) => {
+routerApis.get('/all', [auth], (req, res) => {
     const select = utils.query_lp_videos_select;
     mysqlConnection.query(select, (error, results) => {
         if (error) throw error;
@@ -18,7 +20,7 @@ routerApis.get('/all', (req, res) => {
     })
 });
 
-routerApis.get('/all/:id', (req, res) => {
+routerApis.get('/all/:id', [auth], (req, res) => {
     var { id } = req.params;
     const select = utils.query_lp_videos_select + ` WHERE id = ${id}`;
     mysqlConnection.query(select, (error, results) => {
@@ -31,7 +33,7 @@ routerApis.get('/all/:id', (req, res) => {
     })
 });
 
-routerApis.post('/add', (req, res) => {
+routerApis.post('/add', [auth], (req, res) => {
     const values = {
         tema_video: req.body.tema_video,
         url_video: req.body.url_video
@@ -48,7 +50,7 @@ routerApis.post('/add', (req, res) => {
     });
 });
 
-routerApis.put('/update/:id', (req, res) => {
+routerApis.put('/update/:id', [auth], (req, res) => {
     const { id } = req.params;
     const values = {
         tema_video: req.body.tema_video,
@@ -67,7 +69,7 @@ routerApis.put('/update/:id', (req, res) => {
 });
 
 
-routerApis.delete('/delete/:id', (req, res) => {
+routerApis.delete('/delete/:id', [auth], (req, res) => {
     const { id } = req.params;
     res.send(`delete => ${req}`);
 });

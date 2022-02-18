@@ -13,6 +13,13 @@ app.use(require('./routes/lp-app'));
 app.use(require('./routes/webhook'));
 app.use(require('./schedules/ipscann'));
 
+const authRouter = require("./routes/auth");
+const userRouter = require("./routes/user");
+
+// Setup all the routes
+app.use("/api/auth", authRouter);
+app.use("/api/user", userRouter);
+
 // Configurations [express server]
 app.listen(app.get('port'), () => {
     console.log(`App listen on port ${app.get('port')}`);

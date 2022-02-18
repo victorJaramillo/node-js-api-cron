@@ -1,6 +1,8 @@
 const axios = require('axios');
 const { response } = require('express');
 
+const bcrypt = require("bcrypt");
+
 const mysqlConnection = require('../database.js');
 
 var getNewPublicIp = async function () {
@@ -28,7 +30,7 @@ const sendNewIpSlackNotification = async function (ip) {
             }
         ]
     }).then(res => {
-        response = slack_message_response(res.status) ;
+        response = slack_message_response(res.status);
     }).catch(err => {
         throw err
     })
@@ -40,20 +42,20 @@ const sendTextSlackNotification = async function (text) {
     await axios.post(process.env.SLACK_WEBHOOK, {
         text: text
     }).then(res => {
-        response = slack_message_response(res.status) ;
+        response = slack_message_response(res.status);
     }).catch(err => {
         throw err
     })
     return response;
 }
 
-const slack_message_response = function (statusCode){
+const slack_message_response = function (statusCode) {
     return { message: `message sent to webhook with statusCode: ${statusCode}` };
 }
 
-const get_external_api = async function(endpoint){
+const get_external_api = async function (endpoint) {
     var response = {};
-    await axios.get(endpoint).then( (resp) => {
+    await axios.get(endpoint).then((resp) => {
         response = resp;
     }).catch(err => {
         throw err;
@@ -61,9 +63,9 @@ const get_external_api = async function(endpoint){
     return response;
 }
 
-const get_external_api_with_security = async function(endpoint, key){
+const get_external_api_with_security = async function (endpoint, key) {
     var response = {};
-    await axios.get(endpoint, {headers:{ 'Authorization': key }}).then( (resp) => {
+    await axios.get(endpoint, { headers: { 'Authorization': key } }).then((resp) => {
         console.log(resp.data);
         response = resp.data;
     }).catch(err => {
@@ -72,9 +74,9 @@ const get_external_api_with_security = async function(endpoint, key){
     return response;
 }
 
-const put_external_api_with_security = async function(endpoint, body, key){
+const put_external_api_with_security = async function (endpoint, body, key) {
     var response = {};
-    await axios.put(endpoint, body, {headers:{ 'Authorization': key }}).then( (resp) => {
+    await axios.put(endpoint, body, { headers: { 'Authorization': key } }).then((resp) => {
 
         response = resp.status;
     }).catch(err => {
@@ -82,12 +84,6 @@ const put_external_api_with_security = async function(endpoint, body, key){
     });
     return response;
 }
-
-const config_server_select = 'SELECT * FROM server_config.public_ip';
-
-const query_lp_videos_select = 'SELECT * FROM url_videos_reuniones';
-
-const insert_lp_videos = `INSERT INTO url_videos_reuniones SET ?`;
 
 const config_server_select_by_ip = function (ip) {
     return config_server_select + ` WHERE public_ip ='${ip}'`
@@ -97,13 +93,25 @@ const updated_ip_configuration = function (ip) {
     return `UPDATE server_config.public_ip SET ? WHERE public_ip.public_ip = '${ip}'`
 }
 
-const update_lp_videos = function(id) {
+const update_lp_videos = function (id) {
     return `UPDATE url_videos_reuniones SET ? WHERE id = ${id}`;
 }
 
-const godaddy_url = function(url, dns) {
+const godaddy_url = function (url, dns) {
     return url.replace('{dns}', dns);
 }
+
+const encode_hash_text = async function (text) {
+    const salt = await bcrypt.genSalt(10);
+    const hashed_text = await bcrypt.hash(text, salt);
+    return hashed_text;
+}
+
+const config_server_select = 'SELECT * FROM server_config.public_ip';
+
+const query_lp_videos_select = 'SELECT * FROM url_videos_reuniones';
+
+const insert_lp_videos = `INSERT INTO url_videos_reuniones SET ?`;
 
 const insert_ip_configuration = `INSERT server_config.public_ip SET ?`;
 
@@ -111,9 +119,16 @@ const select_godaddy_records = `SELECT * FROM server_config.developer_api_keys W
 
 const select_enabled_services = `SELECT service_name FROM server_config.enabled_services`;
 
-module.exports = { 
-    getNewPublicIp, 
-    sendNewIpSlackNotification, 
+const create_new_user = `INSERT server_config.api_users SET ?`;
+
+const find_user = function(email, password){
+    return `SELECT * FROM server_config.api_users WHERE email = '${email}'`;
+}
+
+
+module.exports = {
+    getNewPublicIp,
+    sendNewIpSlackNotification,
     updated_ip_configuration,
     config_server_select_by_ip,
     update_lp_videos,
@@ -122,10 +137,13 @@ module.exports = {
     get_external_api_with_security,
     put_external_api_with_security,
     sendTextSlackNotification,
-    config_server_select, 
+    encode_hash_text,
+    find_user,
+    config_server_select,
     query_lp_videos_select,
     insert_lp_videos,
     insert_ip_configuration,
     select_godaddy_records,
     select_enabled_services,
+    create_new_user
 };
