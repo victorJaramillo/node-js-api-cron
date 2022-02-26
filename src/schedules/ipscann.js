@@ -3,7 +3,7 @@ const express = require('express');
 const router = express.Router();
 const utils = require('../utils/utils.js');
 
-const mysqlConnection = require('../database.js');
+const {mysqlConnection, query} = require('../database.js');
 
 const SCHEDULED_TIME_STACK = process.env.SCHEDULED_TIME_STACK;
 
@@ -27,7 +27,7 @@ const task = cron.schedule(`*/${SCHEDULED_TIME_STACK} * * * *`, () => {
                     "previous_public_ip": ip.public_ip,
                     "changed_ip": false
                 };
-                mysqlConnection.query(utils.insert_ip_configuration, values, (error, results) => {
+                mysqlConnection.query(utils.insert_ip_configuration, values, (error) => {
                     if (error) throw error;
                     else {
                         console.log({ 'message': 'field inserted successfully' });
