@@ -28,7 +28,10 @@ const task = cron.schedule(`*/${SCHEDULED_TIME_STACK} * * * *`, () => {
                     "changed_ip": false
                 };
                 mysqlConnection.query(utils.insert_ip_configuration, values, (error) => {
-                    if (error) throw error;
+                    if (error) {
+                        utils.sendNewIpSlackNotification(error);
+                        throw error;
+                    }
                     else {
                         console.log({ 'message': 'field inserted successfully' });
                         utils.sendNewIpSlackNotification(public_ip).then((message) => {
