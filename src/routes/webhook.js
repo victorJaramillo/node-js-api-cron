@@ -7,7 +7,7 @@ const mysqlConnection = require('../database.js');
 
 const auth = require("../middleware/auth");
 
-routerWebHook.get('/webhook', [auth], (req, resp) => {
+routerWebHook.get('/webhook', (req, resp) => {
     utils.sendTextSlackNotification('PRUEBA').then((data) => {
         resp.send((data))
     });
@@ -27,7 +27,7 @@ routerWebHook.get('/changed/public-ip/:ip', [auth], (req, res) => {
     })
 });
 
-routerWebHook.get('/current/public-ip', [auth], (req, res) => {
+routerWebHook.get('/current/public-ip', (req, res) => {
     utils.getNewPublicIp().then((x) => {
         res.send(x);
     })
