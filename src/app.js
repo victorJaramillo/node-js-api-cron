@@ -25,6 +25,6 @@ app.listen(app.get('port'), () => {
     console.log(`App listen on port ${app.get('port')}`);
     console.log('registered_endpoints');
     listEndpoints(app).forEach(element => {
-        console.log(element);
+        console.log({'path': element.path, 'methods': element.methods});
     });
 });
