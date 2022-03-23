@@ -3,9 +3,10 @@ const express = require('express');
 const router = express.Router();
 const utils = require('../utils/utils.js');
 
-const {mysqlConnection, query} = require('../database.js');
+const { mysqlConnection, query } = require('../database.js');
 
 const SCHEDULED_TIME_STACK = process.env.SCHEDULED_TIME_STACK;
+const IS_PRODUCTION = process.env.IS_PRODUCTION;
 
 router.post('/scheduler', async (req, res) => {
     task.start();
@@ -66,13 +67,15 @@ const update_godaddy_records = function (new_ip) {
                             }
                         }
                     })
-                    utils.put_external_api_with_security(dns_records_endoint, array_dns_records, authorization).then((res, err) => {
-                        if (err) { throw err }
-                        else {
-                            console.log(`Los registros de DNS, han sido actualizados correctamente, status: ${res}`);
-                            utils.sendTextSlackNotification(`Los registros de DNS, han sido actualizados correctamente, status: ${res}`)
-                        }
-                    });
+                    if (IS_PRODUCTION) {
+                        utils.put_external_api_with_security(dns_records_endoint, array_dns_records, authorization).then((res, err) => {
+                            if (err) { throw err }
+                            else {
+                                console.log(`Los registros de DNS, han sido actualizados correctamente, status: ${res}`);
+                                utils.sendTextSlackNotification(`Los registros de DNS, han sido actualizados correctamente, status: ${res}`)
+                            }
+                        });
+                    }
                     response = (array_dns_records);
                 })
             });
