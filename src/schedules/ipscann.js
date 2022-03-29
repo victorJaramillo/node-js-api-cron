@@ -67,7 +67,7 @@ const update_godaddy_records = function (new_ip) {
                             }
                         }
                     })
-                    if (IS_PRODUCTION) {
+                    if (JSON.parse(IS_PRODUCTION)) {
                         utils.put_external_api_with_security(dns_records_endoint, array_dns_records, authorization).then((res, err) => {
                             if (err) { throw err }
                             else {

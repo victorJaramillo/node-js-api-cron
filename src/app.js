@@ -15,10 +15,12 @@ app.use(require('./schedules/ipscann'));
 
 const authRouter = require("./routes/auth");
 const userRouter = require("./routes/user");
+const currency_convert = require("./routes/currency-convert");
 
 // Setup all the routes
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
+app.use("/api/v1/currconv", currency_convert);
 
 // Configurations [express server]
 app.listen(app.get('port'), () => {
