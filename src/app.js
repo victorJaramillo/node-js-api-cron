@@ -1,10 +1,15 @@
 const express = require('express');
+const cors = require('cors');
 const listEndpoints = require("express-list-endpoints");
 
 const bodyParser = require('body-parser');
 
 // Settings
 const app = express();
+
+app.use(cors({
+    origin: 'localhost:4200'
+  }));
 app.set('port', process.env.NODE_PORT || 3050);
 app.use(bodyParser.json());
 
@@ -15,7 +20,7 @@ app.use(require('./schedules/ipscann'));
 
 const authRouter = require("./routes/auth");
 const userRouter = require("./routes/user");
-const currency_convert = require("./routes/currency-convert");
+const currency_convert = require("./routes/currency-converter");
 
 // Setup all the routes
 app.use("/api/auth", authRouter);

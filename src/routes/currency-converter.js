@@ -9,7 +9,7 @@ const mysqlConnection = require('../database.js');
 const auth = require("../middleware/auth");
 
 currencyRouter.post('/', [auth], async (req, res) => {
-    const { unit } = req.body;
+    const { unit, quantity } = req.body;
     if (!unit) {
         res.status(400);
         if (unit === '' || unit === null) {
@@ -18,10 +18,18 @@ currencyRouter.post('/', [auth], async (req, res) => {
             res.send({ validation_error: 'the parameter unit is required in body' })
     } else {
         const { server, api_key, endpoint } = await execute_query(queries_util.get_currconv_configs);
+        const upper_unit = unit.toUpperCase();
         const api_configs = `${server}${endpoint}${api_key}`;
-        const url = api_configs.replace('{coin}', unit.toUpperCase())
+        const url = api_configs.replace('{coin}', upper_unit)
         const response = await utils.get_external_api(url);
-        res.send(response.data);
+        if(quantity && quantity != '' ){
+            const responseMap = new Map(Object.entries(response.data));
+            total = (responseMap.get(upper_unit)*quantity);
+            responseMap.set(`${upper_unit}`, Math.round(total));
+            
+            res.send(Object.fromEntries(responseMap));
+        } else 
+            res.send(response.data);
     }
 })
 
