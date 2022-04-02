@@ -7,7 +7,7 @@ const mysqlConnection = require('../database.js');
 
 const auth = require("../middleware/auth");
 
-routerWebHook.get('/webhook', (req, resp) => {
+routerWebHook.get('/send', (req, resp) => {
     // const { number } = req.body;
 
     // const width = 20
