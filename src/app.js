@@ -24,7 +24,7 @@ const webhook = require('./routes/webhook');
 const userRouter = require("./routes/user");
 const currency_convert = require("./routes/currency-converter");
 const lpapp = require('./routes/lp-app');
-const product = require('./routes/product');
+const product = require('./routes/product_route');
 
 // Setup all the routes
 app.use("/api/lp", lpapp);

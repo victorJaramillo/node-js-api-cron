@@ -1,7 +1,7 @@
 const express = require('express');
 const routerApis = express.Router();
 
-const mysqlConnection = require('../database.js');
+const {mysqlConnection, query} = require('../database.js');
 
 const auth = require("../middleware/auth");
 
@@ -38,11 +38,10 @@ routerApis.post('/add', [auth], (req, res) => {
         tema_video: req.body.tema_video,
         url_video: req.body.url_video
     }
-    console.log(JSON.stringify(req.body.url_video));
     mysqlConnection.query(utils.insert_lp_videos, values, (error) => {
         if (error) throw error;
         else {
-            res.json({
+            res.send({
                 message: "added successfuly",
                 object: req.body
             });
