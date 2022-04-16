@@ -3,10 +3,15 @@ const get_available_configs = 'SELECT tab1.server, tab1.api_key, tab2.endpoint  
 
 // Edipartstore
 
-const get_products = 'SELECT * FROM edipartstore.producto p ';
+const get_products = 'SELECT id,name,description,price,stock,brand,enable,product_image FROM edipartstore.producto p  ';
+
+const get_products_images = (ids) => {
+    return `SELECT p.id_producto, p.url_publica, p.ultima_actualizacion FROM edipartstore.producto_imagen p WHERE p.id_producto IN (${ids})`
+};
 
 module.exports = {
     get_currconv_configs,
     get_available_configs,
-    get_products
+    get_products,
+    get_products_images
 }

@@ -8,6 +8,19 @@ const mysqlConnection = require('../database.js');
 
 productRouter.get('/', async (req, res) => {
     const response = await execute_query(queries_util.get_products);
+    const ids = [];
+    response.forEach(prd => {
+        ids.push(prd.id);
+        prd.product_image = []
+    });
+    const image_response = await execute_query(queries_util.get_products_images(ids));
+    response.forEach(prd => {
+        image_response.forEach(data => {
+            if(data.id_producto === prd.id)
+            prd.product_image.push(data);
+        })
+    })
+    
     res.send(response)
 })
 
