@@ -6,7 +6,7 @@ const get_available_configs = 'SELECT tab1.server, tab1.api_key, tab2.endpoint  
 const get_products = 'SELECT id,name,description,price,stock,brand,enable,product_image FROM edipartstore.producto p  ';
 
 const get_products_images = (ids) => {
-    return `SELECT p.id_producto, p.url_publica, p.ultima_actualizacion FROM edipartstore.producto_imagen p WHERE p.id_producto IN (${ids})`
+    return `SELECT p.id_producto AS product_id, p.url_publica AS public_url, p.ultima_actualizacion as last_update FROM edipartstore.producto_imagen p WHERE p.id_producto IN (${ids})`
 };
 
 module.exports = {

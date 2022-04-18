@@ -15,10 +15,7 @@ productRouter.get('/', async (req, res) => {
     });
     const image_response = await execute_query(queries_util.get_products_images(ids));
     response.forEach(prd => {
-        image_response.forEach(data => {
-            if(data.id_producto === prd.id)
-            prd.product_image.push(data);
-        })
+        prd.product_image.push(image_response.find(x => x.product_id === prd.id));
     })
     
     res.send(response)
