@@ -24,6 +24,7 @@ const list_bucket = async () => {
     return bucketsList
 };
 
+// Upload file
 const upload_file = async (filename, file) => {
     // create object from file data
     const submitFileDataResult = await minioClient
@@ -36,6 +37,7 @@ const upload_file = async (filename, file) => {
     return submitFileDataResult
 };
 
+// Create new bucket in server
 const create_bucket = async (bucketName) => {
     console.log(`Creating Bucket: ${bucketName}`);
     const response = await minioClient.makeBucket(bucketName, "hello-there").catch((e) => {
@@ -46,7 +48,7 @@ const create_bucket = async (bucketName) => {
     return response
 }
 
-
+// List all object/files into bucket
 let list_bucket_objects = function (bucketName) {
     return new Promise((resolve, reject) => {
         const objectsListTemp = [];
@@ -58,7 +60,6 @@ let list_bucket_objects = function (bucketName) {
             resolve(objectsListTemp);
         });
     })
-
 }
 
 module.exports = { upload_file, list_bucket, create_bucket, list_bucket_objects };
