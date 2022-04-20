@@ -24,10 +24,16 @@ s3Router.post('/create/bucket', [auth], async (req, res) => {
     res.send(response)
 })
 
-s3Router.get('/buckets/objects', [auth], async (req, res) => {
-    const {bucket_name} = req.body
+s3Router.get('/bucket/objects', [auth], async (req, res) => {
+    const {bucket_name} = req.query
     const response = await s3.list_bucket_objects(bucket_name)
     if(response)
+    res.send(response)
+})
+
+s3Router.get('/bucket/objects/public-url', [auth], async (req, res) => {
+    const {bucket_name, file_name, expiry} = req.query;
+    const response = await s3.get_public_url(bucket_name, file_name, expiry)
     res.send(response)
 })
 

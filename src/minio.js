@@ -4,6 +4,8 @@ const Minio = require("minio");
 const fs = require('fs');
 const { reject } = require('bcrypt/promises');
 
+const DEFAULT_EXPIRY = 86400;
+
 // S3 Bucket
 const minioClient = new Minio.Client({
     accessKey: process.env.ACCESS_KEY,
@@ -62,4 +64,16 @@ let list_bucket_objects = function (bucketName) {
     })
 }
 
-module.exports = { upload_file, list_bucket, create_bucket, list_bucket_objects };
+const get_public_url = async (bucketName, fileName, expiry) => {
+    const response = {}
+    if(expiry){
+        expiry =  Number.parseInt(expiry)
+        const url = await minioClient.presignedGetObject(bucketName, fileName, expiry);
+        return {public_url: url, expiry: expiry}
+    }else {
+        const url = await minioClient.presignedGetObject(bucketName, fileName, DEFAULT_EXPIRY);
+        return {public_url: url, expiry: DEFAULT_EXPIRY}
+    }
+} 
+
+module.exports = { upload_file, list_bucket, create_bucket, list_bucket_objects, get_public_url };

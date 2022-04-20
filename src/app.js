@@ -24,13 +24,13 @@ app.use(fileUpload());
 // Middleware
 app.use(require('./schedules/ipscann'));
 
-const authRouter = require("./routes/auth");
-const webhook = require('./routes/webhook');
-const userRouter = require("./routes/user");
-const currency_convert = require("./routes/currency-converter");
-const lpapp = require('./routes/lp-app');
+const authRouter = require("./routes/auth_route");
+const webhook = require('./routes/webhook_route');
+const userRouter = require("./routes/user_route");
+const currency_convert = require("./routes/currency_converter_route");
+const lpapp = require('./routes/lp_app_route');
 const product = require('./routes/product_route');
-const s3minio = require('./routes/s3minio');
+const s3minio = require('./routes/s3minio_route');
 
 // Setup all the routes
 app.use("/api/lp", lpapp);
