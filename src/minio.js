@@ -33,6 +33,7 @@ const minioClient = new Minio.Client({
     secretKey: process.env.SECRET_KEY,
     endPoint: process.env.MINIO_HOST,
     pathStyle: true,
+    signatureVersion: 'v4'
 });
 const bucketName = "second-bucket";
 
