@@ -20,7 +20,6 @@ services:
       - backend
     depends_on:
       - mysql_db
-      - minio_s3
   mysql_db:
     image: mysql:5.7
     container_name: mysql_db
@@ -33,21 +32,5 @@ services:
       - $HOME/mysql/mysql57-data/_data:/var/lib/mysql
     networks:
       - backend
-  minio_s3:
-    image: 's3backup'
-    restart: always
-    container_name: minio_s3
-    ports:
-      - '9000:9000'
-    environment:
-      - MINIO_ACCESS_KEY=AKIAIOSFODNN7EXAMPLE
-      - MINIO_SECRET_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
-    volumes:
-      - minio_data
-    networks:
-      - backend
-volumes:
-  minio_data:
-    driver: local
 networks:
   backend:
