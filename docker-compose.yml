@@ -20,6 +20,7 @@ services:
       - backend
     depends_on:
       - mysql_db
+      - minio_s3
   mysql_db:
     image: mysql:5.7
     container_name: mysql_db

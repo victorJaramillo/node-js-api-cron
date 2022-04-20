@@ -28,7 +28,12 @@ const credentinals = () => {
 }
 
 // S3 Bucket
-const minioClient = new Minio.Client(credentinals());
+const minioClient = new Minio.Client({
+    accessKey: process.env.ACCESS_KEY,
+    secretKey: process.env.SECRET_KEY,
+    endPoint: process.env.MINIO_HOST,
+    pathStyle: true,
+});
 const bucketName = "second-bucket";
 
 
