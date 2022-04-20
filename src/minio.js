@@ -12,8 +12,7 @@ const credentinals = () => {
         return {
             accessKey: process.env.ACCESS_KEY,
             secretKey: process.env.SECRET_KEY,
-            port: process.env.MINIO_PORT,
-            endPoint: process.env.MINIO_HOST,
+            port: JSON.parse(process.env.MINIO_PORT),
             useSSL: false,
             pathStyle: true,
         }
@@ -82,14 +81,14 @@ let list_bucket_objects = function (bucketName) {
 
 const get_public_url = async (bucketName, fileName, expiry) => {
     const response = {}
-    if (expiry) {
-        expiry = Number.parseInt(expiry)
+    if(expiry){
+        expiry =  Number.parseInt(expiry)
         const url = await minioClient.presignedGetObject(bucketName, fileName, expiry);
-        return { public_url: url, expiry: expiry }
-    } else {
+        return {public_url: url, expiry: expiry}
+    }else {
         const url = await minioClient.presignedGetObject(bucketName, fileName, DEFAULT_EXPIRY);
-        return { public_url: url, expiry: DEFAULT_EXPIRY }
+        return {public_url: url, expiry: DEFAULT_EXPIRY}
     }
-}
+} 
 
 module.exports = { upload_file, list_bucket, create_bucket, list_bucket_objects, get_public_url };
