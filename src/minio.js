@@ -5,14 +5,30 @@ const fs = require('fs');
 const { reject } = require('bcrypt/promises');
 
 const DEFAULT_EXPIRY = 86400;
+const IS_PRODUCTION = JSON.parse(process.env.IS_PRODUCTION);
+
+const credentinals = () => {
+    if (IS_PRODUCTION) {
+        return {
+            accessKey: process.env.ACCESS_KEY,
+            secretKey: process.env.SECRET_KEY,
+            port: process.env.MINIO_PORT,
+            endPoint: process.env.MINIO_HOST,
+            useSSL: false,
+            pathStyle: true,
+        }
+    }else {
+        return {
+            accessKey: process.env.ACCESS_KEY,
+            secretKey: process.env.SECRET_KEY,
+            endPoint: process.env.MINIO_HOST,
+            pathStyle: true,
+        }
+    }
+}
 
 // S3 Bucket
-const minioClient = new Minio.Client({
-    accessKey: process.env.ACCESS_KEY,
-    secretKey: process.env.SECRET_KEY,
-    endPoint: process.env.MINIO_HOST,
-    pathStyle: true,
-});
+const minioClient = new Minio.Client(credentinals());
 const bucketName = "second-bucket";
 
 
@@ -66,14 +82,14 @@ let list_bucket_objects = function (bucketName) {
 
 const get_public_url = async (bucketName, fileName, expiry) => {
     const response = {}
-    if(expiry){
-        expiry =  Number.parseInt(expiry)
+    if (expiry) {
+        expiry = Number.parseInt(expiry)
         const url = await minioClient.presignedGetObject(bucketName, fileName, expiry);
-        return {public_url: url, expiry: expiry}
-    }else {
+        return { public_url: url, expiry: expiry }
+    } else {
         const url = await minioClient.presignedGetObject(bucketName, fileName, DEFAULT_EXPIRY);
-        return {public_url: url, expiry: DEFAULT_EXPIRY}
+        return { public_url: url, expiry: DEFAULT_EXPIRY }
     }
-} 
+}
 
 module.exports = { upload_file, list_bucket, create_bucket, list_bucket_objects, get_public_url };

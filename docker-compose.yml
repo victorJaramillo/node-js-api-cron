@@ -7,8 +7,8 @@ services:
     restart: always
     ports:
       - "3350:3350"
-    env_file: 
-      - enviroment/.env  
+    env_file:
+      - enviroment/.env
     environment:
       - MYSQL_LP_USER=${MYSQL_LP_USER}
       - MYSQL_LP_PASS=${MYSQL_LP_PASS}
@@ -32,5 +32,21 @@ services:
       - $HOME/mysql/mysql57-data/_data:/var/lib/mysql
     networks:
       - backend
+  minio_s3:
+    image: 's3backup'
+    restart: always
+    container_name: minio_s3
+    ports:
+      - '9000:9000'
+    environment:
+      - MINIO_ACCESS_KEY=AKIAIOSFODNN7EXAMPLE
+      - MINIO_SECRET_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+    volumes:
+      - minio_data
+    networks:
+      - backend
+volumes:
+  minio_data:
+    driver: local
 networks:
   backend:
