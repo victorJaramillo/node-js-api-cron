@@ -12,6 +12,7 @@ const credentinals = () => {
         return {
             accessKey: process.env.ACCESS_KEY,
             secretKey: process.env.SECRET_KEY,
+            endPoint: process.env.MINIO_HOST,
             port: JSON.parse(process.env.MINIO_PORT),
             useSSL: false,
             pathStyle: true,
