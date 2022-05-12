@@ -21,6 +21,13 @@ productRouter.get('/', async (req, res) => {
     res.send(response)
 })
 
+productRouter.get('/:id', async (req, res) => {
+    var { id } = req.params;
+    const response = await execute_query(queries_util.get_product_by_id(id));
+    console.log(response);
+    res.send(response[0]);
+})
+
 const execute_query = async function (sentence) {
     const response = await mysqlConnection.query(sentence);
     return response;

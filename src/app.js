@@ -31,6 +31,7 @@ const currency_convert = require("./routes/currency_converter_route");
 const lpapp = require('./routes/lp_app_route');
 const product = require('./routes/product_route');
 const s3minio = require('./routes/s3minio_route');
+const userShopRouter = require('./routes/user_shop_router');
 
 // Setup all the routes
 app.use("/api/lp", lpapp);
@@ -40,6 +41,7 @@ app.use("/api/user", userRouter);
 app.use("/api/product", product);
 app.use("/api/v1/currconv", currency_convert);
 app.use("/api/s3", s3minio);
+app.use("/api/v1/shop/user", userShopRouter);
 
 // Configurations [express server]
 app.listen(app.get('port'), () => {

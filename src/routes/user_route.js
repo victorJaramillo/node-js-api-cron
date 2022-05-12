@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt");
 const mysqlConnection = require('../database.js');
 
 const utils = require('../utils/utils.js')
+const query_utils = require('../utils/queries_util.js')
 const auth = require("../middleware/auth");
 
 // Setup the express server router
@@ -18,12 +19,12 @@ router.post("/create", [auth], async (req, res) => {
         res.status(400).send(response_message)
     } else {
         // agregar lógica de verificación de email existente en la base de datos
-        const find_user_query = utils.find_user(body.email);
+        const find_user_query = find_user.find_user(body.email);
         const user = await mysqlConnection.query(find_user_query);
         if(!user[0]){
             const hashed_password = await utils.encode_hash_text(req.body.password);
             const user = { email: req.body.email, password: hashed_password };
-            const response = await mysqlConnection.query(utils.create_new_user, user);
+            const response = await mysqlConnection.query(query_utils.create_new_user, user);
             if (response) {
                 res.status(201).send({ message: 'user created' });
             }
