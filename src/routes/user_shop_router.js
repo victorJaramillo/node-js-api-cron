@@ -17,6 +17,8 @@ userShopRouter.get("/", [auth], async (req, res) => {
 })
 
 userShopRouter.get("/:id/roles", [auth], async (req, res) => {
+    var { id } = req.params;
+    console.log(id);
     res.send({role:{id: 1}})
 })
 
