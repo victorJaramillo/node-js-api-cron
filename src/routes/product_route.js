@@ -5,27 +5,32 @@ const utils = require('../utils/utils.js');
 const queries_util = require('../utils/queries_util.js');
 
 const mysqlConnection = require('../database.js');
+const service = require('../services/product_shop_service.js');
+
 
 productRouter.get('/', async (req, res) => {
-    const response = await execute_query(queries_util.get_products);
-    const ids = [];
-    response.forEach(prd => {
-        ids.push(prd.id);
-        prd.product_image = []
-    });
-    const image_response = await execute_query(queries_util.get_products_images(ids));
-    response.forEach(prd => {
-        prd.product_image.push(image_response.find(x => x.product_id === prd.id));
-    })
-    
-    res.send(response)
+    const response = await service.get_products();
+    if(response){
+        res.send(response)
+    }else {
+        res.send({})
+    }
 })
 
 productRouter.get('/:id', async (req, res) => {
     var { id } = req.params;
     const response = await execute_query(queries_util.get_product_by_id(id));
-    console.log(response);
-    res.send(response[0]);
+    if(response){
+        const ids = []
+        ids.push(id);
+        const image_response = await execute_query(queries_util.get_products_images(ids));
+        response[0].product_image = [];
+        response[0].enable = Boolean(Number.parseInt(response[0].enable))
+        image_response.forEach( x => {
+            response[0].product_image.push(x)
+        })
+        res.send(response[0]);
+    }
 })
 
 const execute_query = async function (sentence) {

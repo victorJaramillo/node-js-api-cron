@@ -7,26 +7,6 @@ const { reject } = require('bcrypt/promises');
 const DEFAULT_EXPIRY = 86400;
 const IS_PRODUCTION = JSON.parse(process.env.IS_PRODUCTION);
 
-const credentinals = () => {
-    if (IS_PRODUCTION) {
-        return {
-            accessKey: process.env.ACCESS_KEY,
-            secretKey: process.env.SECRET_KEY,
-            endPoint: process.env.MINIO_HOST,
-            port: JSON.parse(process.env.MINIO_PORT),
-            useSSL: false,
-            pathStyle: true,
-        }
-    }else {
-        return {
-            accessKey: process.env.ACCESS_KEY,
-            secretKey: process.env.SECRET_KEY,
-            endPoint: process.env.MINIO_HOST,
-            pathStyle: true,
-        }
-    }
-}
-
 // S3 Bucket
 const minioClient = new Minio.Client({
     accessKey: process.env.ACCESS_KEY,
@@ -34,7 +14,7 @@ const minioClient = new Minio.Client({
     endPoint: process.env.MINIO_HOST,
     pathStyle: true
 });
-const bucketName = "second-bucket";
+const bucketName = process.env.MINIO_BUCKET;
 
 
 // List all buckets
