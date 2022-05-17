@@ -55,7 +55,6 @@ routerApis.put('/update/:id', [auth], (req, res) => {
         tema_video: req.body.tema_video,
         url_video: req.body.url_video
     }
-    console.log(JSON.stringify(req.body.url_video));
     mysqlConnection.query(utils.update_lp_videos(id), values, (error) => {
         if (error) throw error;
         else {

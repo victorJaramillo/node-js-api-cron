@@ -7,8 +7,6 @@ const auth = require("../middleware/auth");
 const bucketName = process.env.MINIO_BUCKET;
 
 s3Router.post('/upload', [auth], async (req, res) => {
-    console.log(req.files);
-    console.log('name => ',req.files);
     const response = await s3.upload_file(req.files.file.name, req.files.file.data);
     if (response)
     res.send({message: 'ok', etag: response.etag})

@@ -22,4 +22,10 @@ productRouter.get('/:id', async (req, res) => {
     }
 })
 
+productRouter.put('/', async (req, res) => {
+    console.log('req => ', req.body);
+    res.send({})
+})
+
+
 module.exports = productRouter;

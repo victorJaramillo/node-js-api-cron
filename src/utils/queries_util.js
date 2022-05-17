@@ -23,6 +23,10 @@ const find_shop_user = (email) => {
     FROM edipartstore.usuario
     WHERE CORREO_ELECTRONICO like '${email}'`;
 }
+const find_shop_user_by_rut = (rut) => {
+    return `SELECT CORREO_ELECTRONICO AS email FROM edipartstore.usuario
+    WHERE RUT_USUARIO = '${rut}'`
+}
 
 const find_location = (location) => {
     return `SELECT 
@@ -42,8 +46,11 @@ const find_city = (city) => {
     where c2.ID_CIUDAD = ${city}`
 }
 
-const find_region = () => {
-    return `SELECT r.ID_REGION as id, r.REGION as region_name FROM edipartstore.region r`
+const find_region = `SELECT r.ID_REGION as id, r.REGION as region_name FROM edipartstore.region r`;
+
+const find_region_by_id = (id) => {
+    const query = find_region;
+    return query+` WHERE r.ID_REGION = ${id}`
 }
 
 const find_cities_by_region_id = (region_id) => {
@@ -66,6 +73,8 @@ module.exports = {
     find_location,
     find_city,
     find_region,
+    find_region_by_id,
     find_cities_by_region_id,
-    find_locations_by_city_id
+    find_locations_by_city_id,
+    find_shop_user_by_rut
 }

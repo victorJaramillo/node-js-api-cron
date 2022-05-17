@@ -8,6 +8,12 @@ addressRouter.get('/regions', async (req, res) => {
     res.send(response);
 });
 
+addressRouter.get('/regions/:id', async (req, res) => {
+    var { id } = req.params;
+    const response = await address_service.find_regions(id);
+    res.send(response);
+});
+
 addressRouter.get('/regions/:id/cities', async (req, res) => {
     var { id } = req.params;
     const response = await address_service.find_cities_by_region_id(id);
