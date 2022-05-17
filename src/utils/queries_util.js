@@ -42,8 +42,16 @@ const find_city = (city) => {
     where c2.ID_CIUDAD = ${city}`
 }
 
-const find_region = (region) => {
-    return `SELECT r.ID_REGION as id, r.REGION as region_name FROM edipartstore.region r WHERE r.ID_REGION = ${region}`
+const find_region = () => {
+    return `SELECT r.ID_REGION as id, r.REGION as region_name FROM edipartstore.region r`
+}
+
+const find_cities_by_region_id = (region_id) => {
+    return `SELECT c.ID_CIUDAD as id, c.CIUDAD as city_name FROM edipartstore.ciudad c WHERE c.ID_REGION = ${region_id}`;
+}
+
+const find_locations_by_city_id = (city_id) => {
+    return `SELECT c.ID_COMUNA as id, c.COMUNA as location_name FROM edipartstore.comuna c WHERE c.ID_CIUDAD =  ${city_id}`;
 }
 
 module.exports = {
@@ -57,5 +65,7 @@ module.exports = {
     find_shop_user,
     find_location,
     find_city,
-    find_region
+    find_region,
+    find_cities_by_region_id,
+    find_locations_by_city_id
 }
