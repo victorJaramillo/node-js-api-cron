@@ -42,7 +42,7 @@ routerApis.post('/add', [auth], (req, res) => {
         if (error) throw error;
         else {
             res.send({
-                message: "added successfuly",
+                message: "added successfully",
                 object: req.body
             });
         }

@@ -27,5 +27,9 @@ productRouter.put('/', async (req, res) => {
     res.send({})
 })
 
+productRouter.post('/', async (req, res) => {
+    const response = await service.create_product(req.body);
+    res.send(response)
+})
 
 module.exports = productRouter;

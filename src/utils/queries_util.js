@@ -61,6 +61,9 @@ const find_locations_by_city_id = (city_id) => {
     return `SELECT c.ID_COMUNA as id, c.COMUNA as location_name FROM edipartstore.comuna c WHERE c.ID_CIUDAD =  ${city_id}`;
 }
 
+const create_product = `INSERT INTO edipartstore.producto SET ?`;
+const create_product_image = `INSERT INTO edipartstore.producto_imagen SET ?`;
+
 module.exports = {
     get_currconv_configs,
     get_available_configs,
@@ -76,5 +79,7 @@ module.exports = {
     find_region_by_id,
     find_cities_by_region_id,
     find_locations_by_city_id,
-    find_shop_user_by_rut
+    find_shop_user_by_rut,
+    create_product,
+    create_product_image
 }

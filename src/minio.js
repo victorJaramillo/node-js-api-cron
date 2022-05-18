@@ -66,7 +66,6 @@ let list_bucket_objects = function (bucketName) {
 }
 
 const get_public_url = async (bucketName, fileName, expiry) => {
-    const response = {}
     if(expiry){
         expiry =  Number.parseInt(expiry)
         const url = await minioClient.presignedGetObject(bucketName, fileName, expiry);

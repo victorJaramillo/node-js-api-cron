@@ -54,4 +54,31 @@ async function get_images_by_ids(ids) {
     return await execute_query(query_utils.get_products_images(ids));
 }
 
-module.exports = { get_products, get_product_by_id }
+const create_product = async (product) => {
+    const values = {
+        name: product.name,
+        description: product.description,
+        price: product.price,
+        stock: product.stock,
+        brand: product.brand,
+        enable: product.enable,
+        product_image: product.product_image[0].public_url
+    }
+    const response = await mysqlConnection.query(query_utils.create_product, values);
+    if(response) {
+        const img = {
+            id_producto: response.insertId,
+            url_publica: product.product_image[0].public_url,
+            nombre_archivo: product.product_image[0].file_name,
+            ultima_actualizacion: new Date()
+        }
+        const img_reponse = await mysqlConnection.query(query_utils.create_product_image, img);
+        if(img_reponse)
+        return {message: "product created successfully"}
+    } else {
+        return response;
+    }
+    console.log(response);
+}
+
+module.exports = { get_products, get_product_by_id, create_product }
