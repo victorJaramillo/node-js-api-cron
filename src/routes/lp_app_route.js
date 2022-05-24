@@ -1,14 +1,14 @@
 const express = require('express');
 const routerApis = express.Router();
 
-const mysqlConnection = require('../database.js');
+const {mysqlConnection, query} = require('../database.js');
 
 const auth = require("../middleware/auth");
 
 const utils = require('../utils/utils.js');
 
 
-routerApis.get('/all', [auth], (req, res) => {
+routerApis.get('/all', (req, res) => {
     const select = utils.query_lp_videos_select;
     mysqlConnection.query(select, (error, results) => {
         if (error) throw error;
@@ -20,7 +20,7 @@ routerApis.get('/all', [auth], (req, res) => {
     })
 });
 
-routerApis.get('/all/:id', [auth], (req, res) => {
+routerApis.get('/all/:id', (req, res) => {
     var { id } = req.params;
     const select = utils.query_lp_videos_select + ` WHERE id = ${id}`;
     mysqlConnection.query(select, (error, results) => {
@@ -38,12 +38,11 @@ routerApis.post('/add', [auth], (req, res) => {
         tema_video: req.body.tema_video,
         url_video: req.body.url_video
     }
-    console.log(JSON.stringify(req.body.url_video));
     mysqlConnection.query(utils.insert_lp_videos, values, (error) => {
         if (error) throw error;
         else {
-            res.json({
-                message: "added successfuly",
+            res.send({
+                message: "added successfully",
                 object: req.body
             });
         }
@@ -56,7 +55,6 @@ routerApis.put('/update/:id', [auth], (req, res) => {
         tema_video: req.body.tema_video,
         url_video: req.body.url_video
     }
-    console.log(JSON.stringify(req.body.url_video));
     mysqlConnection.query(utils.update_lp_videos(id), values, (error) => {
         if (error) throw error;
         else {

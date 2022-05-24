@@ -8,6 +8,16 @@ const mysqlConnection = mysql.createConnection({
     database: process.env.DB_NAME
 });
 
+// Configurations [Data base]
+mysqlConnection.connect((error) => {
+  if (error) {
+    console.log(process.env);
+    throw error;
+  } else {
+    console.log(`Connected to database`);
+  }
+});
+
 const pool = mysql.createPool({
     host: process.env.DB_HOST,
     port: process.env.DB_PORT,
@@ -15,17 +25,6 @@ const pool = mysql.createPool({
     password: process.env.MYSQL_LP_PASS || 'root123',
     database: process.env.DB_NAME
 });
-
-// Configurations [Data base]
-mysqlConnection.connect((error) => {
-    if (error) {
-        console.log(process.env);
-        throw error;
-    } else {
-        console.log(`Connected to database`);
-    }
-});
-
 
 let query = function( sql, values ) {
     // devolver una promesa

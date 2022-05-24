@@ -24,9 +24,9 @@ router.post("/", async (req, res) => {
         try {
             var valid = await bcrypt.compare(password, user.password)
             if (!valid) {res.status(400).send(invalid_user_message)}
+            delete user.password;
             const token = jwt.sign({
-                id: user._id,
-                roles: user.roles,
+                id: user._id, email
             }, "jwtPrivateKey", { expiresIn: "15m" });
     
             res.send({

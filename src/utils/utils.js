@@ -66,7 +66,6 @@ const get_external_api = async function (endpoint) {
 const get_external_api_with_security = async function (endpoint, key) {
     var response = {};
     await axios.get(endpoint, { headers: { 'Authorization': key } }).then((resp) => {
-        console.log(resp.data);
         response = resp.data;
     }).catch(err => {
         throw err;
@@ -119,7 +118,6 @@ const select_godaddy_records = `SELECT * FROM server_config.developer_api_keys W
 
 const select_enabled_services = `SELECT service_name FROM server_config.enabled_services`;
 
-const create_new_user = `INSERT server_config.api_users SET ?`;
 
 const find_user = function(email){
     return `SELECT * FROM server_config.api_users WHERE email = '${email}'`;
@@ -145,5 +143,4 @@ module.exports = {
     insert_ip_configuration,
     select_godaddy_records,
     select_enabled_services,
-    create_new_user
 };
