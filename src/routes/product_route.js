@@ -1,6 +1,6 @@
 const express = require('express');
 const productRouter = express.Router();
-const service = require('../services/product_shop_service.js');
+const service = require('../services/shop/product_shop_service.js');
 
 
 productRouter.get('/', async (req, res) => {
@@ -24,7 +24,8 @@ productRouter.get('/:id', async (req, res) => {
 
 productRouter.put('/', async (req, res) => {
     console.log('req => ', req.body);
-    res.send({})
+    const response = await service.update_product(req.body);
+    res.send(response)
 })
 
 productRouter.post('/', async (req, res) => {

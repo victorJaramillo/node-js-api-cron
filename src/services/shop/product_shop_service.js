@@ -1,5 +1,5 @@
-const query_utils = require('../utils/queries_util.js')
-const mysqlConnection = require('../database.js');
+const query_utils = require('../../utils/queries_util.js')
+const mysqlConnection = require('../../database.js');
 
 /**
  * 
@@ -55,15 +55,7 @@ async function get_images_by_ids(ids) {
 }
 
 const create_product = async (product) => {
-    const values = {
-        name: product.name,
-        description: product.description,
-        price: product.price,
-        stock: product.stock,
-        brand: product.brand,
-        enable: product.enable,
-        product_image: product.product_image[0].public_url
-    }
+    const values = product_object(product)
     const response = await mysqlConnection.query(query_utils.create_product, values);
     if(response) {
         const img = {
@@ -81,4 +73,24 @@ const create_product = async (product) => {
     console.log(response);
 }
 
-module.exports = { get_products, get_product_by_id, create_product }
+const update_product = async (product) => {
+    const values = product_object(product)
+    const response = await mysqlConnection.query(query_utils.update_product(product.id), values);
+    if(response) {
+        return {message: "product updated successfully"}
+    }
+}
+
+function product_object(product) {
+    return {
+        name: product.name,
+        description: product.description,
+        price: product.price,
+        stock: product.stock,
+        brand: product.brand,
+        enable: product.enable,
+        product_image: product.product_image[0].public_url
+    };
+}
+
+module.exports = { get_products, get_product_by_id, create_product, update_product }

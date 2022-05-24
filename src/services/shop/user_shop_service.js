@@ -1,5 +1,5 @@
-const query_utils = require('../utils/queries_util.js')
-const mysqlConnection = require('../database.js');
+const query_utils = require('../../utils/queries_util.js')
+const mysqlConnection = require('../../database.js');
 
 const getCompleteUserInformation = async(email) => {
     const query = query_utils.find_shop_user(email);

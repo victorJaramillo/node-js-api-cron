@@ -63,6 +63,9 @@ const find_locations_by_city_id = (city_id) => {
 
 const create_product = `INSERT INTO edipartstore.producto SET ?`;
 const create_product_image = `INSERT INTO edipartstore.producto_imagen SET ?`;
+const update_product = (id) => {
+    return `UPDATE edipartstore.producto SET ? WHERE producto.id = '${id}'`
+};
 
 module.exports = {
     get_currconv_configs,
@@ -81,5 +84,6 @@ module.exports = {
     find_locations_by_city_id,
     find_shop_user_by_rut,
     create_product,
-    create_product_image
+    create_product_image,
+    update_product
 }

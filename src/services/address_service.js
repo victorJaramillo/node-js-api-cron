@@ -4,7 +4,7 @@ const mysqlConnection = require('../database.js');
 const find_regions = async (id) => {
     var response;
     if(id){
-        response = await mysqlConnection.query(query_utils.find_region(id));
+        response = await mysqlConnection.query(query_utils.find_region_by_id(id));
         response = response[0]
     }else {
         response = await mysqlConnection.query(query_utils.find_region);
