@@ -17,8 +17,7 @@ router.post("/create", [auth], async (req, res) => {
         // agregar lógica de verificación de email existente en la base de datos
         const user = await user_service.get_user_by_email(body.email);
         if (!user) {
-            const hashed_password = await utils.encode_hash_text(req.body.password);
-            const user = { email: req.body.email, password: hashed_password };
+            const user = await utils.get_hashed_user(body);
             const response = await user_service.create_api_user(user);
             if (response) {
                 res.status(201).send({ message: 'user created' });

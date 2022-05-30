@@ -2,6 +2,8 @@ const express = require('express');
 const productRouter = express.Router();
 const service = require('../services/shop/product_shop_service.js');
 
+const auth = require("../middleware/auth");
+
 
 productRouter.get('/', async (req, res) => {
     const response = await service.get_products();
@@ -22,13 +24,13 @@ productRouter.get('/:id', async (req, res) => {
     }
 })
 
-productRouter.put('/', async (req, res) => {
+productRouter.put('/', [auth], async (req, res) => {
     console.log('req => ', req.body);
     const response = await service.update_product(req.body);
     res.send(response)
 })
 
-productRouter.post('/', async (req, res) => {
+productRouter.post('/', [auth],async (req, res) => {
     const response = await service.create_product(req.body);
     res.send(response)
 })

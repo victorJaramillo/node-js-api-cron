@@ -84,6 +84,12 @@ const put_external_api_with_security = async function (endpoint, body, key) {
     return response;
 }
 
+async function get_hashed_user(body) {
+    const hashed_password = await encode_hash_text(body.password);
+    const user = { email: body.email, password: hashed_password };
+    return user;
+}
+
 const config_server_select_by_ip = function (ip) {
     return config_server_select + ` WHERE public_ip ='${ip}'`
 }
@@ -143,4 +149,5 @@ module.exports = {
     insert_ip_configuration,
     select_godaddy_records,
     select_enabled_services,
+    get_hashed_user
 };

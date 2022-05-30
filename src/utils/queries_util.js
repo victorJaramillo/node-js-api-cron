@@ -5,7 +5,7 @@ const get_available_configs = 'SELECT tab1.server, tab1.api_key, tab2.endpoint  
 const get_products = 'SELECT id,name,description,price,stock,brand,enable,product_image FROM edipartstore.producto p  ';
 
 const get_products_images = (ids) => {
-    return `SELECT p.id_producto AS product_id, p.url_publica AS public_url, p.ultima_actualizacion as last_update FROM edipartstore.producto_imagen p WHERE p.id_producto IN (${ids})`
+    return `SELECT p.id_producto AS product_id, p.url_publica AS public_url, p.last_update FROM edipartstore.producto_imagen p WHERE p.id_producto IN (${ids})`
 };
 
 const get_product_by_id = (id) => {
@@ -18,14 +18,16 @@ const find_user = function(email){
 
 const create_new_user = `INSERT server_config.api_users SET ?`;
 
+const create_new_shop_user = `INSERT edipartstore.usuario SET ?`;
+
 const find_shop_user = (email) => {
-    return `SELECT ID_USUARIO AS id, NOMBRE AS name, APELLIDO AS last_name, RUT_USUARIO AS user_rut, DV_USUARIO AS user_rut_dv, CORREO_ELECTRONICO AS email, DIRECCION AS address, ID_COMUNA AS location, HABILITADO AS enable
+    return `SELECT id, name, last_name, user_rut, user_rut_dv, email, address, location, enable
     FROM edipartstore.usuario
-    WHERE CORREO_ELECTRONICO like '${email}'`;
+    WHERE email like '${email}'`;
 }
 const find_shop_user_by_rut = (rut) => {
-    return `SELECT CORREO_ELECTRONICO AS email FROM edipartstore.usuario
-    WHERE RUT_USUARIO = '${rut}'`
+    return `SELECT email FROM edipartstore.usuario
+    WHERE user_rut = '${rut}'`
 }
 
 const find_location = (location) => {
@@ -67,6 +69,16 @@ const update_product = (id) => {
     return `UPDATE edipartstore.producto SET ? WHERE producto.id = '${id}'`
 };
 
+const get_all_product_images = 'SELECT * FROM edipartstore.producto_imagen';
+
+const get_products_by_file_name = (file_name) => {
+    return get_all_product_images+` WHERE file_name LIKE '${file_name}'`
+}
+
+const update_public_url = (file_name) => {
+    return `UPDATE edipartstore.producto_imagen SET ? WHERE file_name = '${file_name}'`
+}
+
 module.exports = {
     get_currconv_configs,
     get_available_configs,
@@ -85,5 +97,9 @@ module.exports = {
     find_shop_user_by_rut,
     create_product,
     create_product_image,
-    update_product
+    update_product,
+    create_new_shop_user,
+    get_all_product_images,
+    get_products_by_file_name,
+    update_public_url
 }

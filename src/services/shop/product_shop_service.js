@@ -57,16 +57,16 @@ async function get_images_by_ids(ids) {
 const create_product = async (product) => {
     const values = product_object(product)
     const response = await mysqlConnection.query(query_utils.create_product, values);
-    if(response) {
+    if (response) {
         const img = {
             id_producto: response.insertId,
             url_publica: product.product_image[0].public_url,
-            nombre_archivo: product.product_image[0].file_name,
-            ultima_actualizacion: new Date()
+            file_name: product.product_image[0].file_name,
+            last_update: new Date()
         }
         const img_reponse = await mysqlConnection.query(query_utils.create_product_image, img);
-        if(img_reponse)
-        return {message: "product created successfully"}
+        if (img_reponse)
+            return { message: "product created successfully" }
     } else {
         return response;
     }
@@ -76,8 +76,33 @@ const create_product = async (product) => {
 const update_product = async (product) => {
     const values = product_object(product)
     const response = await mysqlConnection.query(query_utils.update_product(product.id), values);
-    if(response) {
-        return {message: "product updated successfully"}
+    if (response) {
+        return { message: "product updated successfully" }
+    }
+}
+
+const get_images_by_file_name = async (file_name) => {
+    const response = await mysqlConnection.query(query_utils.get_products_by_file_name(file_name));
+    if (response) {
+        return response;
+    } else {
+        return [];
+    }
+}
+
+const update_public_url = async (file_name, values) => {
+    const response = await mysqlConnection.query(query_utils.update_public_url(file_name), values);
+    if (response) {
+        return { message: "public url image updated successfully" }
+    }
+}
+
+const get_products_images = async () => {
+    const response = await mysqlConnection.query(query_utils.get_all_product_images);
+    if (response) {
+        return response;
+    } else {
+        return [];
     }
 }
 
@@ -93,4 +118,4 @@ function product_object(product) {
     };
 }
 
-module.exports = { get_products, get_product_by_id, create_product, update_product }
+module.exports = { get_products, get_product_by_id, create_product, update_product, get_images_by_file_name, update_public_url, get_products_images }
