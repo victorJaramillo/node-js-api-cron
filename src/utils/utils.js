@@ -129,6 +129,16 @@ const find_user = function(email){
     return `SELECT * FROM server_config.api_users WHERE email = '${email}'`;
 }
 
+const UUID = () => {
+    var dt = new Date().getTime();
+    var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        var r = (dt + Math.random()*16)%16 | 0;
+        dt = Math.floor(dt/16);
+        return (c=='x' ? r :(r&0x3|0x8)).toString(16);
+    });
+    return uuid;
+}
+
 
 module.exports = {
     getNewPublicIp,
@@ -149,5 +159,6 @@ module.exports = {
     insert_ip_configuration,
     select_godaddy_records,
     select_enabled_services,
-    get_hashed_user
+    get_hashed_user,
+    UUID
 };
