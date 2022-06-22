@@ -16,7 +16,7 @@ router.post('/scheduler', async (req, res) => {
     res.send({ message: 'Ok' })
 });
 
-const task = cron.schedule(`*/${1} * * * *`, () => {
+const task = cron.schedule(`*/${SCHEDULED_TIME_STACK} * * * *`, () => {
     console.log(`running a task every ${SCHEDULED_TIME_STACK} minutes`);
     public_url_images()
     const timeElapsed = Date.now();
