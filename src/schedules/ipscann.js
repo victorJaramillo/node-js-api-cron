@@ -16,7 +16,7 @@ router.post('/scheduler', async (req, res) => {
     res.send({ message: 'Ok' })
 });
 
-const task = cron.schedule(`*/${SCHEDULED_TIME_STACK} * * * *`, () => {
+const task = cron.schedule(`*/${1} * * * *`, () => {
     console.log(`running a task every ${SCHEDULED_TIME_STACK} minutes`);
     public_url_images()
     const timeElapsed = Date.now();
@@ -93,28 +93,28 @@ const update_godaddy_records = function (new_ip) {
 }
 
 const public_url_images = async () => {
-    const timeElapsed = Date.now();
-    const start_date = new Date(timeElapsed);
-    console.log(`Start date excecution ${start_date.toISOString()}`);
-    if (JSON.parse(IS_PRODUCTION)) {
-        const update_public_url = await product_shop_service.get_products_images();
+    const timeElapsed = Date.now()
+    const start_date = new Date(timeElapsed)
+    console.log(`Start date excecution ${start_date.toISOString()}`)
+    if (!JSON.parse(IS_PRODUCTION)) {
+        const update_public_url = await product_shop_service.get_products_images()
         for (const img of update_public_url) {
 
             const { file_name, last_update } = img
-            const diff = last_update.getDate() - start_date.getDate()
+            const diff = start_date.getDate() - last_update.getDate()
             if (diff >= 5) {
                 const { public_url } = await s3minio_service.public_url(file_name);
                 const product_image = { last_update: start_date, url_publica: public_url }
 
-                const update_public_url = await product_shop_service.update_public_url(file_name, product_image);
+                const update_public_url = await product_shop_service.update_public_url(file_name, product_image)
 
-                console.log(JSON.stringify(`file ${file_name}, ${update_public_url.message}`));
+                console.log(JSON.stringify(`file ${file_name}, ${update_public_url.message}`))
             }
         }
 
     }
-    const end_date = new Date(timeElapsed);
-    console.log(`End date excecution ${end_date.toISOString()}`);
+    const end_date = new Date(timeElapsed)
+    console.log(`End date excecution ${end_date.toISOString()}`)
 }
 
 
