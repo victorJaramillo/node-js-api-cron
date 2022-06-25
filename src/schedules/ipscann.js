@@ -96,7 +96,7 @@ const public_url_images = async () => {
     const timeElapsed = Date.now()
     const start_date = new Date(timeElapsed)
     console.log(`Start date excecution ${start_date.toISOString()}`)
-    if (!JSON.parse(IS_PRODUCTION)) {
+    if (JSON.parse(IS_PRODUCTION)) {
         const update_public_url = await product_shop_service.get_products_images()
         for (const img of update_public_url) {
 
