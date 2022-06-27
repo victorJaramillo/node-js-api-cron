@@ -2,8 +2,13 @@ const s3 = require('../minio.js');
 
 const bucketName = process.env.MINIO_BUCKET;
 
-const public_url = async(name, expiry) => {
-    const resposne = await s3.get_public_url(bucketName, name, expiry);
+const public_url = async(bucket_name, name, expiry) => {
+    var resposne;
+    if(bucket_name){
+        resposne = await s3.get_public_url(bucket_name, name, expiry)
+    }else {
+        resposne = await s3.get_public_url(bucketName, name, expiry)
+    }
     return resposne;
 }
 

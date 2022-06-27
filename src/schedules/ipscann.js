@@ -10,6 +10,7 @@ const product_shop_service = require('../services/shop/product_shop_service.js')
 
 const SCHEDULED_TIME_STACK = process.env.SCHEDULED_TIME_STACK;
 const IS_PRODUCTION = process.env.IS_PRODUCTION;
+const bucketName = process.env.MINIO_BUCKET;
 
 router.post('/scheduler', async (req, res) => {
     task.start();
@@ -103,7 +104,7 @@ const public_url_images = async () => {
             const { file_name, last_update } = img
             const diff = start_date.getDate() - last_update.getDate()
             if (diff >= 5) {
-                const { public_url } = await s3minio_service.public_url(file_name);
+                const { public_url } = await s3minio_service.public_url(bucketName, file_name)
                 const product_image = { last_update: start_date, url_publica: public_url }
 
                 const update_public_url = await product_shop_service.update_public_url(file_name, product_image)
