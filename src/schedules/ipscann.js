@@ -102,7 +102,8 @@ const public_url_images = async () => {
         for (const img of update_public_url) {
 
             const { file_name, last_update } = img
-            const diff = start_date.getDate() - last_update.getDate()
+            var diff = start_date.getTime() - last_update.getTime()
+            diff = diff / (1000 * 3600 * 24)
             if (diff >= 5) {
                 const { public_url } = await s3minio_service.public_url(bucketName, file_name)
                 const product_image = { last_update: start_date, url_publica: public_url }
