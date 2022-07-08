@@ -4,7 +4,7 @@ const Minio = require("minio");
 const fs = require('fs');
 const { reject } = require('bcrypt/promises');
 
-const DEFAULT_EXPIRY = 86400;
+const DEFAULT_EXPIRY = 259200;
 const IS_PRODUCTION = JSON.parse(process.env.IS_PRODUCTION);
 
 // S3 Bucket
