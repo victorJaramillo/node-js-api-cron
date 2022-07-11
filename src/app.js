@@ -33,6 +33,7 @@ const product = require('./routes/product_route');
 const s3minio = require('./routes/s3minio_route');
 const userShopRouter = require('./routes/user_shop_router');
 const addressRouter = require('./routes/address_route');
+const email = require('./routes/mail_sender_router');
 
 // Setup all the routes
 app.use("/api/lp", lpapp);
@@ -44,6 +45,7 @@ app.use("/api/v1/currconv", currency_convert);
 app.use("/api/s3", s3minio);
 app.use("/api/v1/shop/user", userShopRouter);
 app.use("/api/v1/shop/address", addressRouter);
+app.use("/api/v1/email", email);
 
 // Configurations [express server]
 app.listen(app.get('port'), () => {

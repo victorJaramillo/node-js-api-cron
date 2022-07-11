@@ -39,7 +39,9 @@ s3Router.get('/bucket/objects/public-url', [auth], async (req, res) => {
 })
 
 s3Router.get('/bucket/objects', [auth], async (req, res) => {
-
+    const {bucket_name, file_name} = req.query
+    const respose = await s3minio_service.get_element(bucket_name, file_name)
+    respose.pipe(res)
 })
 
 
