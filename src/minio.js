@@ -87,12 +87,6 @@ const get_fObject = async (bucketName, filename) => {
         console.log(x);
     }).catch( e => {console.log(e)})
     return {response: 'success', path: path}
-    //     , async function (err, res) {
-    //     if (err) { return console.log(err) }
-    //     else {
-    //         console.log('success => ', res)
-    //     }
-    // })
 }
 
 module.exports = { upload_file, list_bucket, create_bucket, list_bucket_objects, get_public_url, get_element, get_fObject };
