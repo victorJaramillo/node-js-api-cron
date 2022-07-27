@@ -21,9 +21,10 @@ app.set('port', process.env.NODE_PORTS);
 app.use(bodyParser.json());
 app.use(fileUpload());
 
-// Middleware
 app.use(require('./schedules/ipscann'));
+app.use(require('./schedules/webScaping'));
 
+// Middleware
 const authRouter = require("./routes/auth_route");
 const webhook = require('./routes/webhook_route');
 const userRouter = require("./routes/user_route");

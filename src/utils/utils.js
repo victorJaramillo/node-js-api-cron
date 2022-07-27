@@ -49,6 +49,68 @@ const sendTextSlackNotification = async function (text) {
     return response;
 }
 
+const sendTextAndImageSlackNotification = async function (title, desc, date, quality, image_url, vote) {
+    var response = {};
+    const body = {
+        "type": "home",
+        "blocks": [
+            {
+                "type": "actions",
+                "elements": [
+                    {
+                        "type": "button",
+                        "text": {
+                            "type": "plain_text",
+                            "text": ":movie_camera: NEW MOVIE DETECTED",
+                            "emoji": true
+                        },
+                        "style": "primary",
+                        "value": "approve"
+                    }
+                ]
+            },
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": `*Title:* ${title}\n *Description*: *${desc}*\n *Date*: *${date}*\n *Quality*: *${quality}*\n*Vote*: ${vote}:star:`
+                },
+                "accessory": {
+                    "type": "image",
+                    "image_url": `${image_url}`,
+                    "alt_text": "plane"
+                }
+            },
+            {
+                "type": "actions",
+                "elements": [
+                    {
+                        "type": "button",
+                        "text": {
+                            "type": "plain_text",
+                            "text": ":movie_camera: NEW MOVIE DETECTED",
+                            "emoji": true
+                        },
+                        "style": "primary",
+                        "value": "approve"
+                    }
+                ]
+            },
+            {
+                "type": "divider"
+            }
+        ]
+    };
+    await axios.post(process.env.SLACK_WEBHOOK,
+        body
+    ).then(res => {
+        response = slack_message_response(res.status);
+    }).catch(err => {
+        throw err
+    })
+    return response;
+}
+
 const slack_message_response = function (statusCode) {
     return { message: `message sent to webhook with statusCode: ${statusCode}` };
 }
@@ -125,18 +187,28 @@ const select_godaddy_records = `SELECT * FROM server_config.developer_api_keys W
 const select_enabled_services = `SELECT service_name FROM server_config.enabled_services`;
 
 
-const find_user = function(email){
+const find_user = function (email) {
     return `SELECT * FROM server_config.api_users WHERE email = '${email}'`;
 }
 
 const UUID = () => {
     var dt = new Date().getTime();
-    var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-        var r = (dt + Math.random()*16)%16 | 0;
-        dt = Math.floor(dt/16);
-        return (c=='x' ? r :(r&0x3|0x8)).toString(16);
+    var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        var r = (dt + Math.random() * 16) % 16 | 0;
+        dt = Math.floor(dt / 16);
+        return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
     });
     return uuid;
+}
+
+const urlSrcFromStrHtml = (strHtml) => {
+    const imgRex = /<img.*?data-src="(.*?)"[^>]+>/g;
+    const images = [];
+    let img;
+    while ((img = imgRex.exec(strHtml))) {
+        images.push(img[1]);
+    }
+    return images
 }
 
 
@@ -160,5 +232,7 @@ module.exports = {
     select_godaddy_records,
     select_enabled_services,
     get_hashed_user,
-    UUID
+    UUID,
+    sendTextAndImageSlackNotification,
+    urlSrcFromStrHtml
 };

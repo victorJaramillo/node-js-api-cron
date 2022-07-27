@@ -79,6 +79,12 @@ const update_public_url = (file_name) => {
     return `UPDATE edipartstore.producto_imagen SET ? WHERE file_name = '${file_name}'`
 }
 
+const save_scraper_movies = 'INSERT INTO web_scraping.cuevana SET ?';
+
+const select_scraper_movies = (title, year) => {
+    return `SELECT * FROM web_scraping.cuevana AS c WHERE c.title LIKE '${title}' AND c.date = '${year}'`
+};
+
 module.exports = {
     get_currconv_configs,
     get_available_configs,
@@ -101,5 +107,7 @@ module.exports = {
     create_new_shop_user,
     get_all_product_images,
     get_products_by_file_name,
-    update_public_url
+    update_public_url,
+    save_scraper_movies,
+    select_scraper_movies
 }

@@ -84,7 +84,6 @@ const get_element = async (bucketName, filename) => {
 const get_fObject = async (bucketName, filename) => {
     const path = `./tmp/${filename}`;
     const resp = await minioClient.fGetObject(bucketName, filename, path).then( x => {
-        console.log(x);
     }).catch( e => {console.log(e)})
     return {response: 'success', path: path}
 }

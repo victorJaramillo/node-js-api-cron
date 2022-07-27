@@ -13,7 +13,7 @@ const INVALID_CREDELTIALS_MESSAGE = { message: 'Invalid email or password.' }
 const EXPIRE_JWT_TOKEN = process.env.EXPIRE_JWT_TOKEN
 
 // On post
-router.post("/", async (req, res) => {
+router.post("", async (req, res) => {
 
     // Get to user from the database, if the user is not there return error
     const { email, password } = req.body
