@@ -33,10 +33,9 @@ const scraping_cuevana_movies = async () => {
         var respArray = []
         $('.TpRwCont .apt ul li').each((i, ele) => {
             const image = $(ele).find('.Image .Objf');
-            // console.log($(image).html());
 
-            var asd = $(image).html();
-            asd = utils.urlSrcFromStrHtml(asd);
+            var image_arr = $(image).html();
+            image_arr = utils.urlSrcFromStrHtml(image);
 
             const content = $(ele).find('.TPMvCn p');
 
@@ -58,19 +57,23 @@ const scraping_cuevana_movies = async () => {
             var qlty = $(content).find('.Qlty');
             qlty = $(qlty).html();
 
+            // <a href="">
+            var href = []
+            $(ele).find('.TPost a[href]').each((index, elem)=>{
+                href.push($(elem).attr('href'))
+            });
+            href = href[0]
 
-            respArray.push({ title, desc, vote, time, date, qlty, asd })
+            respArray.push({ title, desc, vote, time, date, qlty, image_arr, href})
         })
         respArray.map(el => {
             const vote = Number.parseInt(el.vote)
             mysqlConnection.query(queryUtils.select_scraper_movies(el.title, el.date), (err, result) => {
                 if (!result[0]) {
                     if (el.date === '2022' && vote >= 5) {
-                        console.log(el.title, el.desc, el.date, '', el.qlty);
-                        utils.sendTextAndImageSlackNotification(el.title, el.desc, el.date, el.qlty, el.asd[0],el.vote).then((data) => {
-                            console.log(data);
-                        });
-                        delete el.asd
+                        utils.sendTextAndImageSlackNotification('[** CUEVANA **] '+el.title, el.desc, el.date, el.qlty, el.image_arr[0],el.vote, el.href)
+                        delete el.image_arr
+                        delete el.href
                         mysqlConnection.query(queryUtils.save_scraper_movies, el, (err) => {
                             if (err) console.log(err)
                             else {

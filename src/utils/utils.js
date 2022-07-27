@@ -49,7 +49,7 @@ const sendTextSlackNotification = async function (text) {
     return response;
 }
 
-const sendTextAndImageSlackNotification = async function (title, desc, date, quality, image_url, vote) {
+const sendTextAndImageSlackNotification = async function (title, desc, date, quality, image_url, vote, link) {
     var response = {};
     const body = {
         "type": "home",
@@ -73,7 +73,7 @@ const sendTextAndImageSlackNotification = async function (title, desc, date, qua
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": `*Title:* ${title}\n *Description*: *${desc}*\n *Date*: *${date}*\n *Quality*: *${quality}*\n*Vote*: ${vote}:star:`
+                    "text": `*Title:* ${title}\n *Description*: *${desc}*\n *Date*: *${date}*\n *Quality*: *${quality}*\n*Vote*: ${vote}:star:\n*Link:* ${link}`
                 },
                 "accessory": {
                     "type": "image",
