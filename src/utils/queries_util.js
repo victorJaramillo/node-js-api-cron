@@ -81,9 +81,15 @@ const update_public_url = (file_name) => {
 
 const save_scraper_movies = 'INSERT INTO web_scraping.cuevana SET ?';
 
+const save_scraper_pelis_panda = 'INSERT INTO web_scraping.pelis_panda SET ?';
+
 const select_scraper_movies = (title, year) => {
     return `SELECT * FROM web_scraping.cuevana AS c WHERE c.title LIKE '${title}' AND c.date = '${year}'`
 };
+
+const select_scraper_pelis_panda = (title, url) => {
+    return `SELECT * FROM web_scraping.pelis_panda AS c WHERE c.title LIKE '${title}' AND c.url = '${url}'`
+}
 
 module.exports = {
     get_currconv_configs,
@@ -109,5 +115,7 @@ module.exports = {
     get_products_by_file_name,
     update_public_url,
     save_scraper_movies,
-    select_scraper_movies
+    select_scraper_movies,
+    save_scraper_pelis_panda,
+    select_scraper_pelis_panda
 }

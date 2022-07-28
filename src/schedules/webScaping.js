@@ -13,13 +13,15 @@ const cheerio = require('cheerio');
 
 router.get('/scraping', async (req, res) => {
     task.start();
-    const resp = await scraping_cuevana_movies()
-    res.send({ message: 'Ok', resp })
+    await scraping_cuevana_movies()
+    await scraping_pelis_panda();
+    res.send({ message: 'Ok' })
 });
 
 const task = cron.schedule(`*/${WEB_SCRAPING_TIME_STACK} * * * *`, () => {
     console.log(`running a Web Scraping task every ${WEB_SCRAPING_TIME_STACK} minutes`);
     scraping_cuevana_movies()
+    scraping_pelis_panda()
     console.log(`Web Scraping excecution date ${today.toISOString()}`);
 })
 
@@ -59,19 +61,19 @@ const scraping_cuevana_movies = async () => {
 
             // <a href="">
             var href = []
-            $(ele).find('.TPost a[href]').each((index, elem)=>{
+            $(ele).find('.TPost a[href]').each((index, elem) => {
                 href.push($(elem).attr('href'))
             });
             href = href[0]
 
-            respArray.push({ title, desc, vote, time, date, qlty, image_arr, href})
+            respArray.push({ title, desc, vote, time, date, qlty, image_arr, href })
         })
         respArray.map(el => {
             const vote = Number.parseInt(el.vote)
             mysqlConnection.query(queryUtils.select_scraper_movies(el.title, el.date), (err, result) => {
                 if (!result[0]) {
                     if (el.date === '2022' && vote >= 5) {
-                        utils.sendTextAndImageSlackNotification('[** CUEVANA **] '+el.title, el.desc, el.date, el.qlty, el.image_arr[0],el.vote, el.href)
+                        utils.sendTextAndImageSlackNotification('[** CUEVANA **] ' + el.title, el.desc, el.date, el.qlty, el.image_arr[0], el.vote, el.href)
                         delete el.image_arr
                         delete el.href
                         mysqlConnection.query(queryUtils.save_scraper_movies, el, (err) => {
@@ -88,6 +90,53 @@ const scraping_cuevana_movies = async () => {
     } catch (error) {
         console.log(error);
         return error
+    }
+}
+
+const scraping_pelis_panda = async () => {
+    try {
+        const $ = await request({
+            uri: 'https://pelispanda.com/peliculas/',
+            transform: body => cheerio.load(body)
+        });
+
+        var pelisArr = []
+        $('.catalog .container .row').each((i, row) => {
+            $(row).find('.card ').each((i, values) => {
+                const ahref = $(values).find('.card__title a[href]')
+                const title = $(values).find('.card__title')
+                const quality = $(values).find('.card__list')
+                const vote = $(values).find('.card__content .card__rate')
+                const image = $(values).find('.card__cover img[data-src]')
+
+                pelisArr.push(
+                    { 
+                        title: $(title).text(), 
+                        url: $(ahref).attr('href'),
+                        quality: $(quality).text().replaceAll('\n',''),
+                        vote: $(vote).text(),
+                        image: $(image).attr('data-src')
+                    })
+            })
+            pelisArr.map((data) => {
+                const vote = Number.parseInt(data.vote)
+                const cleanTitle = data.title.replaceAll("'", "");
+                mysqlConnection.query(queryUtils.select_scraper_pelis_panda(cleanTitle, data.url), (err, result) => {
+                    if (result && !result[0]) {
+                        if (vote >= 5) {
+                            utils.sendTextAndImageSlackNotification('[** PELIS_PANDA **] ' + cleanTitle, 'N/A', 'N/A', data.quality, data.image, data.vote, data.url)
+                            data.title = cleanTitle;
+                            mysqlConnection.query(queryUtils.save_scraper_pelis_panda, data, (err) => {
+                                if (err) console.log(err)
+                            })
+                        }
+                    }
+                })
+            })
+        });
+        return href
+    } catch (error) {
+        console.log(error);
     }
 }
 
