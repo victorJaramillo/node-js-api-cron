@@ -110,10 +110,10 @@ const scraping_pelis_panda = async () => {
                 const image = $(values).find('.card__cover img[data-src]')
 
                 pelisArr.push(
-                    { 
-                        title: $(title).text(), 
+                    {
+                        title: $(title).text(),
                         url: $(ahref).attr('href'),
-                        quality: $(quality).text().replaceAll('\n',''),
+                        quality: $(quality).text().replaceAll('\n', ''),
                         vote: $(vote).text(),
                         image: $(image).attr('data-src')
                     })
@@ -124,17 +124,18 @@ const scraping_pelis_panda = async () => {
                 mysqlConnection.query(queryUtils.select_scraper_pelis_panda(cleanTitle, data.url), (err, result) => {
                     if (result && !result[0]) {
                         if (vote >= 5) {
-                            utils.sendTextAndImageSlackNotification('[** PELIS_PANDA **] ' + cleanTitle, 'N/A', 'N/A', data.quality, data.image, data.vote, data.url)
                             data.title = cleanTitle;
                             mysqlConnection.query(queryUtils.save_scraper_pelis_panda, data, (err) => {
                                 if (err) console.log(err)
+                                else {
+                                    utils.sendTextAndImageSlackNotification('[** PELIS_PANDA **] ' + cleanTitle, 'N/A', 'N/A', data.quality, data.image, data.vote, data.url)
+                                }
                             })
                         }
                     }
                 })
             })
         });
-        return href
     } catch (error) {
         console.log(error);
     }
