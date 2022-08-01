@@ -13,7 +13,7 @@ const cheerio = require('cheerio');
 
 router.get('/scraping', async (req, res) => {
     task.start();
-    // await scraping_cuevana_movies()
+    await scraping_cuevana_movies()
     await scraping_pelis_panda();
     res.send({ message: 'Ok' })
 });
