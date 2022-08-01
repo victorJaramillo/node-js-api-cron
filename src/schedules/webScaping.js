@@ -13,7 +13,7 @@ const cheerio = require('cheerio');
 
 router.get('/scraping', async (req, res) => {
     task.start();
-    await scraping_cuevana_movies()
+    // await scraping_cuevana_movies()
     await scraping_pelis_panda();
     res.send({ message: 'Ok' })
 });
@@ -111,31 +111,32 @@ const scraping_pelis_panda = async () => {
 
                 pelisArr.push(
                     {
-                        title: $(title).text(),
+                        title: $(title).text().replaceAll("'", ""),
                         url: $(ahref).attr('href'),
                         quality: $(quality).text().replaceAll('\n', ''),
-                        vote: $(vote).text(),
+                        vote: Number.parseInt($(vote).text()),
                         image: $(image).attr('data-src')
-                    })
-            })
-            pelisArr.map((data) => {
-                const vote = Number.parseInt(data.vote)
-                const cleanTitle = data.title.replaceAll("'", "");
-                mysqlConnection.query(queryUtils.select_scraper_pelis_panda(cleanTitle, data.url), (err, result) => {
-                    if (result && !result[0]) {
-                        if (vote >= 5) {
-                            data.title = cleanTitle;
-                            mysqlConnection.query(queryUtils.save_scraper_pelis_panda, data, (err) => {
-                                if (err) console.log(err)
-                                else {
-                                    utils.sendTextAndImageSlackNotification('[** PELIS_PANDA **] ' + cleanTitle, 'N/A', 'N/A', data.quality, data.image, data.vote, data.url)
-                                }
-                            })
-                        }
                     }
-                })
+                )
             })
         });
+        pelisArr.map((data) => {
+            mysqlConnection.query(queryUtils.select_scraper_pelis_panda(data.title, data.url), (err, result) => {
+                if (result && !result[0]) {
+                    if (data.vote >= 5) {
+
+                        mysqlConnection.query(queryUtils.save_scraper_pelis_panda, data, (err) => {
+                            if (err) console.log(err)
+                            else {
+                                utils.sendTextAndImageSlackNotification('[** PELIS_PANDA **] ' + data.title, 'N/A', 'N/A', data.quality, data.image, data.vote, data.url)
+                            }
+                        })
+                    }
+                }
+            })
+        })
+
+
     } catch (error) {
         console.log(error);
     }
