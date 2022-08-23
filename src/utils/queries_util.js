@@ -81,10 +81,16 @@ const update_public_url = (file_name) => {
 
 const save_scraper_movies = 'INSERT INTO web_scraping.cuevana SET ?';
 
+const save_scraper_serie_h_o_t_d = 'INSERT INTO web_scraping.series_cuevana SET ?';
+
 const save_scraper_pelis_panda = 'INSERT INTO web_scraping.pelis_panda SET ?';
 
 const select_scraper_movies = (title, year) => {
     return `SELECT * FROM web_scraping.cuevana AS c WHERE c.title LIKE '${title}' AND c.date = '${year}'`
+};
+
+const select_scraper_serie_h_o_t_d = (title, chapter) => {
+    return `SELECT * FROM web_scraping.series_cuevana AS c WHERE c.title LIKE '${title}' AND c.chapter = '${chapter}'`
 };
 
 const select_scraper_pelis_panda = (title, url) => {
@@ -117,5 +123,7 @@ module.exports = {
     save_scraper_movies,
     select_scraper_movies,
     save_scraper_pelis_panda,
-    select_scraper_pelis_panda
+    select_scraper_pelis_panda,
+    select_scraper_serie_h_o_t_d,
+    save_scraper_serie_h_o_t_d
 }

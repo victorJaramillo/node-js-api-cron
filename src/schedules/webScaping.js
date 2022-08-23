@@ -15,6 +15,7 @@ router.get('/scraping', async (req, res) => {
     task.start();
     await scraping_cuevana_movies()
     await scraping_pelis_panda();
+    await scraping_cuevana_house_of_the_dragons();
     res.send({ message: 'Ok' })
 });
 
@@ -29,7 +30,7 @@ const scraping_cuevana_movies = async () => {
     console.log(`running a Web Scraping task every ${WEB_SCRAPING_TIME_STACK} minutes`);
     try {
         const $ = await request({
-            uri: 'https://cuevana3.rip/',
+            uri: 'https://ww1.cuevana3.me/',
             transform: body => cheerio.load(body)
         });
         var respArray = []
@@ -44,7 +45,7 @@ const scraping_cuevana_movies = async () => {
             var title = $(ele).find('h2');
             title = $(title).html();
 
-            var desc = $(ele).find('.Description p');
+            var desc = $(ele).find('.Description p').next();
             desc = $(desc).html();
 
             var vote = $(content).find('.Vote');
@@ -72,9 +73,9 @@ const scraping_cuevana_movies = async () => {
             const vote = Number.parseInt(el.vote)
             mysqlConnection.query(queryUtils.select_scraper_movies(el.title, el.date), (err, result) => {
                 if (!result[0]) {
-                    if (el.date === '2022' && vote >= 5) {
+                    if (el.date === '2022' && vote >= 3) {
                         utils.sendTextAndImageSlackNotification('[** CUEVANA **] ' + el.title, el.desc, el.date, el.qlty, el.image_arr[0], el.vote, el.href)
-                        const objToSave = {title: el.title, desc: el.desc, vote: el.vote, time: el.time, date: el.date, qlty: el.qlty, link: el.href} 
+                        const objToSave = { title: el.title, desc: el.desc, vote: el.vote, time: el.time, date: el.date, qlty: el.qlty, link: el.href }
                         mysqlConnection.query(queryUtils.save_scraper_movies, objToSave, (err) => {
                             if (err) console.log(err)
                             else {
@@ -138,6 +139,66 @@ const scraping_pelis_panda = async () => {
 
     } catch (error) {
         console.log(error);
+    }
+}
+
+const scraping_cuevana_house_of_the_dragons = async () => {
+    console.log(`running a Web Scraping task every ${WEB_SCRAPING_TIME_STACK} minutes`);
+    try {
+        const $ = await request({
+            uri: 'https://ww1.cuevana3.me/serie/house-of-the-dragon',
+            transform: body => cheerio.load(body)
+        });
+        var respArray = []
+        $('.TpRwCont ul li').each((i, ele) => {
+            const image = $(ele).find('.Image .Objf');
+
+            var image_arr = $(image).html();
+            image_arr = 'https:' + utils.urlSrcFromStrHtml(image);
+
+            var chapter = $(ele).find('.Image .Year');
+            chapter = $(chapter).html();
+
+            var title = $(ele).find('h2');
+            title = $(title).html();
+
+            var premiere_date = $(ele).find('.TPost p');
+            premiere_date = $(premiere_date).html();
+
+            // <a href="">
+            var href = []
+            $(ele).find('.TPost a[href]').each((index, elem) => {
+                href.push($(elem).attr('href'))
+            });
+            href = href[0]
+            if(title && title.includes('House of the Dragon')){
+                if(respArray.length == 0 )
+                respArray.push({ title, premiere_date, chapter, image_arr, href })
+                respArray.map(x => {
+                    if(x.chapter != chapter) {
+                        respArray.push({ title, premiere_date, chapter, image_arr, href })
+                    }
+                })
+            }
+    })
+        respArray.map(el => {
+            mysqlConnection.query(queryUtils.select_scraper_serie_h_o_t_d(el.title, el.chapter), (err, result) => {
+                if (!result[0]) {
+                    utils.sendTextAndImageSlackNotification('[** CUEVANA **] ' + el.title, 'N/A', el.premiere_date, 'N/A', el.image_arr, 'N/A', el.href)
+                    const objToSave = { title: el.title, premiere_date: el.premiere_date, chapter: el.chapter, img_url: el.image_arr, link: el.href }
+                    mysqlConnection.query(queryUtils.save_scraper_serie_h_o_t_d, objToSave, (err) => {
+                        if (err) console.log(err)
+                        else {
+                            console.log({ message: 'saved', el });
+                        }
+                    })
+                }
+            })
+        })
+        return respArray
+    } catch (error) {
+        console.log(error);
+        return error
     }
 }
 
