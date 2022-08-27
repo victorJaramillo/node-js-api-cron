@@ -33,7 +33,7 @@ const get_products = async () => {
  */
 const get_product_by_id = async (id) => {
     var response = await execute_query(query_utils.get_product_by_id(id));
-    if (response) {
+    if (response[0]) {
         response = response[0];
         const image_response = await get_images_by_ids(id);
         response.product_image = [];
@@ -42,6 +42,8 @@ const get_product_by_id = async (id) => {
             response.product_image.push(x)
         })
         return response;
+    }else {
+        return {}
     }
 }
 
