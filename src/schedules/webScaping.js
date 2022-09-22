@@ -13,9 +13,14 @@ const cheerio = require('cheerio');
 
 router.get('/scraping', async (req, res) => {
     task.start();
-    await scraping_cuevana_movies()
-    await scraping_pelis_panda();
-    await scraping_cuevana_house_of_the_dragons();
+    await Promise.all(
+        [
+            scraping_cuevana_movies(), 
+            scraping_pelis_panda(), 
+            scraping_cuevana_house_of_the_dragons(),
+            scraping_cuevana_the_lord_of_the_rings()
+        ]
+    );
     res.send({ message: 'Ok' })
 });
 
@@ -172,24 +177,93 @@ const scraping_cuevana_house_of_the_dragons = async () => {
             });
             href = href[0]
             if(title && title.includes('House of the Dragon')){
-                if(respArray.length == 0 )
-                respArray.push({ title, premiere_date, chapter, image_arr, href })
-                respArray.map(x => {
-                    if(x.chapter != chapter) {
-                        respArray.push({ title, premiere_date, chapter, image_arr, href })
-                    }
-                })
+                if(respArray.length == 0 ){
+                    respArray.push({ title, premiere_date, chapter, image_arr, href })
+                }else {
+                    const exist = respArray.find(ele => {
+                        if(ele.chapter === chapter){
+                            return true;
+                        }
+                        return false;
+                    })
+                    if(!exist)
+                    respArray.push({ title, premiere_date, chapter, image_arr, href })
+                }
             }
     })
         respArray.map(el => {
-            mysqlConnection.query(queryUtils.select_scraper_serie_h_o_t_d(el.title, el.chapter), (err, result) => {
+            mysqlConnection.query(queryUtils.select_scraper_serie_cuevana(el.title, el.chapter), (err, result) => {
                 if (!result[0]) {
-                    utils.sendTextAndImageSlackNotification('[** CUEVANA **] ' + el.title, 'N/A', el.premiere_date, 'N/A', el.image_arr, 'N/A', el.href)
                     const objToSave = { title: el.title, premiere_date: el.premiere_date, chapter: el.chapter, img_url: el.image_arr, link: el.href }
-                    mysqlConnection.query(queryUtils.save_scraper_serie_h_o_t_d, objToSave, (err) => {
+                    mysqlConnection.query(queryUtils.save_scraper_serie_cuevana, objToSave, (err) => {
                         if (err) console.log(err)
                         else {
-                            console.log({ message: 'saved', el });
+                            console.log({ message: 'saved', el })
+                            utils.sendTextAndImageSlackNotification('[** CUEVANA **] ' + el.title, 'N/A', el.premiere_date, 'N/A', el.image_arr, 'N/A', el.href)
+                        }
+                    })
+                }
+            })
+        })
+        return respArray
+    } catch (error) {
+        console.log(error);
+        return error
+    }
+}
+const scraping_cuevana_the_lord_of_the_rings = async () => {
+    console.log(`running a Web Scraping task every ${WEB_SCRAPING_TIME_STACK} minutes`);
+    try {
+        const $ = await request({
+            uri: 'https://ww1.cuevana3.me/serie/the-lord-of-the-rings-the-rings-of-power',
+            transform: body => cheerio.load(body)
+        });
+        var respArray = []
+        $('.TpRwCont ul li').each((i, ele) => {
+            const image = $(ele).find('.Image .Objf');
+
+            var image_arr = $(image).html();
+            image_arr = 'https:' + utils.urlSrcFromStrHtml(image);
+
+            var chapter = $(ele).find('.Image .Year');
+            chapter = $(chapter).html();
+
+            var title = $(ele).find('h2');
+            title = $(title).html();
+
+            var premiere_date = $(ele).find('.TPost p');
+            premiere_date = $(premiere_date).html();
+
+            // <a href="">
+            var href = []
+            $(ele).find('.TPost a[href]').each((index, elem) => {
+                href.push($(elem).attr('href'))
+            });
+            href = href[0]
+            if(title && title.includes('The Lord of the Rings')){
+                if(respArray.length == 0 ){
+                    respArray.push({ title, premiere_date, chapter, image_arr, href })
+                }else {
+                    const exist = respArray.find(ele => {
+                        if(ele.chapter === chapter){
+                            return true;
+                        }
+                        return false;
+                    })
+                    if(!exist)
+                    respArray.push({ title, premiere_date, chapter, image_arr, href })
+                }
+            }
+    })
+        respArray.map(el => {
+            mysqlConnection.query(queryUtils.select_scraper_serie_cuevana(el.title, el.chapter), (err, result) => {
+                if (!result[0]) {
+                    const objToSave = { title: el.title, premiere_date: el.premiere_date, chapter: el.chapter, img_url: el.image_arr, link: el.href }
+                    mysqlConnection.query(queryUtils.save_scraper_serie_cuevana, objToSave, (err) => {
+                        if (err) console.log(err)
+                        else {
+                            console.log({ message: 'saved', el })
+                            utils.sendTextAndImageSlackNotification('[** CUEVANA **] ' + el.title, 'N/A', el.premiere_date, 'N/A', el.image_arr, 'N/A', el.href)
                         }
                     })
                 }
