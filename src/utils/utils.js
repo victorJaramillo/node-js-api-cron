@@ -101,7 +101,7 @@ const sendTextAndImageSlackNotification = async function (title, desc, date, qua
             }
         ]
     };
-    await axios.post(process.env.SLACK_WEBHOOK,
+    await axios.post(process.env.SLACK_WEBHOOK_WEB_SCRAPING,
         body
     ).then(res => {
         response = slack_message_response(res.status);
