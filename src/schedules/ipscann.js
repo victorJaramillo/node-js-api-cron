@@ -12,12 +12,18 @@ const SCHEDULED_TIME_STACK = process.env.SCHEDULED_TIME_STACK;
 const IS_PRODUCTION = process.env.IS_PRODUCTION;
 const bucketName = process.env.MINIO_BUCKET;
 
-router.post('/scheduler', async (req, res) => {
+router.get('/ip-scann', async (req, res) => {
     task.start();
+    await Promise.all([ipScanner()]);
     res.send({ message: 'Ok' })
+
 });
 
 const task = cron.schedule(`*/${SCHEDULED_TIME_STACK} * * * *`, () => {
+    ipScanner()
+});
+
+const ipScanner = async () => {
     console.log(`running a task every ${SCHEDULED_TIME_STACK} minutes`);
     public_url_images()
     const timeElapsed = Date.now();
@@ -54,7 +60,7 @@ const task = cron.schedule(`*/${SCHEDULED_TIME_STACK} * * * *`, () => {
         });
     }
     console.log(`excecution date ${today.toISOString()}`);
-});
+}
 
 const update_godaddy_records = function (new_ip) {
     var response = {};

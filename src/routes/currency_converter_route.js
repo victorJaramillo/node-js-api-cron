@@ -8,6 +8,8 @@ const mysqlConnection = require('../database.js');
 
 const auth = require("../middleware/auth");
 
+const service = require('../services/currency_converter_service')
+
 currencyRouter.post('/', [auth], async (req, res) => {
     const { unit, quantity } = req.body;
     if (!unit) {
@@ -34,9 +36,7 @@ currencyRouter.post('/', [auth], async (req, res) => {
 })
 
 currencyRouter.get('/available', [auth], async (req, res) => {
-    const { server, api_key, endpoint } = await execute_query(queries_util.get_available_configs);
-    const url = `${server}${endpoint}${api_key}`;
-    const response = await utils.get_external_api(url);
+    const response = await service.available_currencies()
     res.send(response.data);
 })
 

@@ -125,9 +125,11 @@ const get_external_api = async function (endpoint) {
     return response;
 }
 
-const get_external_api_with_security = async function (endpoint, key) {
+const get_external_api_with_security = async function (endpoint, key, key_name) {
     var response = {};
-    await axios.get(endpoint, { headers: { 'Authorization': key } }).then((resp) => {
+    console.log(key_name === undefined);
+    key_name === undefined ? key_name = 'Authorization' : key_name = key_name;
+    await axios.get(endpoint, { headers: { 'apikey': key } }).then((resp) => {
         response = resp.data;
     }).catch(err => {
         throw err;
