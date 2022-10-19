@@ -17,8 +17,7 @@ router.get('/scraping', async (req, res) => {
         [
             scraping_cuevana_movies(), 
             scraping_pelis_panda(), 
-            scraping_cuevana_house_of_the_dragons(),
-            scraping_cuevana_the_lord_of_the_rings()
+            scraping_cuevana_house_of_the_dragons()
         ]
     );
     res.send({ message: 'Ok' })
