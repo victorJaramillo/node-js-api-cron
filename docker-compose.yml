@@ -5,8 +5,8 @@ services:
     build: .
     container_name: nodejs-api-container
     restart: always
-    ports:
-      - "3350:3350"
+    expose:
+      - "3350"
     env_file:
       - enviroment/.env
     environment:
@@ -16,8 +16,9 @@ services:
       - DB_PORT=${DB_PORT}
       - DB_NAME=${DB_NAME}
       - NODE_PORT=${NODE_PORT}
-    networks:
-      - backend
+      - VIRTUAL_HOST=nodeapi.vjdev.xyz
+      - LETSENCRYPT_HOST=nodeapi.vjdev.xyz
+      - VIRTUAL_PORT=3350
     depends_on:
       - mysql_db
   mysql_db:
@@ -30,7 +31,7 @@ services:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
     volumes:
       - $HOME/mysql/mysql57-data/_data:/var/lib/mysql
-    networks:
-      - backend
 networks:
-  backend:
+  default:
+    external:
+      name: nginx-proxy
