@@ -3,7 +3,6 @@ version: '3'
 services:
   api:
     build: .
-    container_name: nodejs-api-container
     restart: always
     expose:
       - "3350"
