@@ -97,6 +97,21 @@ const select_scraper_pelis_panda = (title, url) => {
     return `SELECT * FROM web_scraping.pelis_panda AS c WHERE c.title LIKE '${title}' AND c.url = '${url}'`
 }
 
+const select_series = 'SELECT * FROM torrents.series s';
+
+const select_series_url = 'SELECT * FROM torrents.series_url s';
+
+const select_series_where_name = (name) => {
+    return select_series+` WHERE s.serie_name LIKE '${name}'`
+}
+const select_series_where_ids = (ids) => {
+    return select_series+` WHERE s.id IN (${ids})`
+}
+
+const save_new_serie = 'INSERT INTO torrents.series SET ?';
+
+const save_new_serie_url = 'INSERT INTO torrents.series_url SET ?';
+
 module.exports = {
     get_currconv_configs,
     get_available_configs,
@@ -125,5 +140,11 @@ module.exports = {
     save_scraper_pelis_panda,
     select_scraper_pelis_panda,
     select_scraper_serie_cuevana,
-    save_scraper_serie_cuevana
+    save_scraper_serie_cuevana,
+    save_new_serie,
+    save_new_serie_url,
+    select_series,
+    select_series_where_name,
+    select_series_url,
+    select_series_where_ids
 }
