@@ -1,4 +1,5 @@
 const express = require('express');
+const os = require('os');
 const cors = require('cors');
 const listEndpoints = require("express-list-endpoints");
 
@@ -49,6 +50,11 @@ app.use("/api/v1/shop/user", userShopRouter);
 app.use("/api/v1/shop/address", addressRouter);
 app.use("/api/v1/email", email);
 app.use("/api/v1/movies-and-series", moviesAndSeriesRouter);
+
+
+app.use('/', async(req, res) => {
+    res.send({message: 'Ok it work...', hostname: os.hostname()})
+})
 
 // Configurations [express server]
 app.listen(app.get('port'), () => {

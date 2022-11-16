@@ -3,12 +3,10 @@ version: '3'
 services:
   api:
     build: .
-    container_name: nodejs-api-container
+    #container_name: nodejs-api-container
     restart: always
-    ports:
-      - "3350:3350"
     env_file: 
-      - enviroment/.env  
+      - environment/.env  
     environment:
       - MYSQL_LP_USER=${MYSQL_LP_USER}
       - MYSQL_LP_PASS=${MYSQL_LP_PASS}
@@ -19,5 +17,15 @@ services:
     networks:
       - backend
 
+  nginx-proxy:
+    image: nginx:latest
+    volumes:
+      - ./conf.d:/etc/nginx/conf.d
+    depends_on:
+      - api
+    ports:
+      - 3350:3350
+    networks:
+      - backend      
 networks:
   backend:

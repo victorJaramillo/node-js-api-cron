@@ -7,7 +7,7 @@ services:
     expose:
       - "3350"
     env_file:
-      - enviroment/.env
+      - environment/.env
     environment:
       - MYSQL_LP_USER=${MYSQL_LP_USER}
       - MYSQL_LP_PASS=${MYSQL_LP_PASS}
