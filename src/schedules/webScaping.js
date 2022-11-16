@@ -16,8 +16,8 @@ router.get('/scraping', async (req, res) => {
     await Promise.all(
         [
             scraping_cuevana_movies(), 
-            scraping_pelis_panda(), 
-            scraping_cuevana_house_of_the_dragons()
+            scraping_pelis_panda(),
+            scraping_cuevana_la_periferia()
         ]
     );
     res.send({ message: 'Ok' })
@@ -239,21 +239,21 @@ const scraping_cuevana_the_lord_of_the_rings = async () => {
                 href.push($(elem).attr('href'))
             });
             href = href[0]
-            if(title && title.includes('The Lord of the Rings')){
-                if(respArray.length == 0 ){
+            if (title && title.includes('The Lord of the Rings')) {
+                if (respArray.length == 0) {
                     respArray.push({ title, premiere_date, chapter, image_arr, href })
-                }else {
+                } else {
                     const exist = respArray.find(ele => {
-                        if(ele.chapter === chapter){
+                        if (ele.chapter === chapter) {
                             return true;
                         }
                         return false;
                     })
-                    if(!exist)
-                    respArray.push({ title, premiere_date, chapter, image_arr, href })
+                    if (!exist)
+                        respArray.push({ title, premiere_date, chapter, image_arr, href })
                 }
             }
-    })
+        })
         respArray.map(el => {
             mysqlConnection.query(queryUtils.select_scraper_serie_cuevana(el.title, el.chapter), (err, result) => {
                 if (!result[0]) {
@@ -263,6 +263,46 @@ const scraping_cuevana_the_lord_of_the_rings = async () => {
                         else {
                             console.log({ message: 'saved', el })
                             utils.sendTextAndImageSlackNotification('[** CUEVANA **] ' + el.title, 'N/A', el.premiere_date, 'N/A', el.image_arr, 'N/A', el.href)
+                        }
+                    })
+                }
+            })
+        })
+        return respArray
+    } catch (error) {
+        console.log(error);
+        return error
+    }
+}
+
+const scraping_cuevana_la_periferia = async () => {
+    try {
+        const $ = await request({
+            uri: 'https://avohdlinks.latinomegahd.net/?v=lCe',
+            transform: body => cheerio.load(body)
+        });
+        var respArray = []
+        const title = $('.content h3').html()
+        var href = []
+        $('.tab_container').each((i, ele) => {
+            $(ele).find('.tab_content').each((i, elem) => {
+                const hrefdata = $(elem).find('a').attr('href')
+                href.push(hrefdata)
+            })
+        })
+        respArray.push({[title]:href})
+
+        href.map((el,index) => {
+            mysqlConnection.query(queryUtils.select_chapters_la_periferia(el), (err, result) => {
+                if(err) throw err;
+                if (!result[0]) {
+                    const chapter = index+1
+                    const payload = {chapter: chapter, url: el, image: 'https://i.imgur.com/tUupnoY.png'}
+                    mysqlConnection.query(queryUtils.save_new_chapter_la_periferia, payload, (err, result) => {
+                        if(err) throw err;
+                        else {
+                            console.log({ message: 'saved', el })
+                            utils.sendTextAndImageSlackNotification(title, `Chapter ${chapter}`, 'N/A', 'N/A', 'https://i.imgur.com/tUupnoY.png', 'N/A', el)
                         }
                     })
                 }

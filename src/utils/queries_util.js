@@ -112,6 +112,12 @@ const save_new_serie = 'INSERT INTO torrents.series SET ?';
 
 const save_new_serie_url = 'INSERT INTO torrents.series_url SET ?';
 
+const select_chapters_la_periferia = (name) => {
+    return `SELECT * FROM web_scraping.la_periferia l WHERE l.url LIKE '${name}'`
+}
+
+const save_new_chapter_la_periferia = 'INSERT INTO web_scraping.la_periferia SET ?'
+
 module.exports = {
     get_currconv_configs,
     get_available_configs,
@@ -146,5 +152,7 @@ module.exports = {
     select_series,
     select_series_where_name,
     select_series_url,
-    select_series_where_ids
+    select_series_where_ids,
+    select_chapters_la_periferia,
+    save_new_chapter_la_periferia
 }
