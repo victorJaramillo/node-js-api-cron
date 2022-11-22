@@ -118,6 +118,18 @@ const select_chapters_la_periferia = (name) => {
 
 const save_new_chapter_la_periferia = 'INSERT INTO web_scraping.la_periferia SET ?'
 
+const get_all_enabled_services = 'SELECT * FROM server_config.enabled_services x'
+
+const get_all_enabled_services_by_id  = (id) => {
+    return get_all_enabled_services+` WHERE x.id = ${id}`
+}
+
+const delete_enabled_services_by_ids  = () => {
+    return `DELETE FROM server_config.enabled_services WHERE ?`
+}
+
+const save_new_enabled_service = 'INSERT INTO server_config.enabled_services SET ?' 
+
 module.exports = {
     get_currconv_configs,
     get_available_configs,
@@ -154,5 +166,9 @@ module.exports = {
     select_series_url,
     select_series_where_ids,
     select_chapters_la_periferia,
-    save_new_chapter_la_periferia
+    save_new_chapter_la_periferia,
+    get_all_enabled_services,
+    get_all_enabled_services_by_id,
+    delete_enabled_services_by_ids,
+    save_new_enabled_service
 }

@@ -37,6 +37,7 @@ const userShopRouter = require('./routes/user_shop_router');
 const addressRouter = require('./routes/address_route');
 const email = require('./routes/mail_sender_router');
 const moviesAndSeriesRouter = require('./routes/movies_and_series');
+const enabledServicesRouter = require('./routes/server_services/enabled_services');
 
 // Setup all the routes
 app.use("/api/lp", lpapp);
@@ -50,6 +51,8 @@ app.use("/api/v1/shop/user", userShopRouter);
 app.use("/api/v1/shop/address", addressRouter);
 app.use("/api/v1/email", email);
 app.use("/api/v1/movies-and-series", moviesAndSeriesRouter);
+
+app.use("/api/server/enabled-services", enabledServicesRouter);
 
 
 app.use('/', async(req, res) => {
