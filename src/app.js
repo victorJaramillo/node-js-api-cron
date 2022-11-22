@@ -37,7 +37,7 @@ const userShopRouter = require('./routes/user_shop_router');
 const addressRouter = require('./routes/address_route');
 const email = require('./routes/mail_sender_router');
 const moviesAndSeriesRouter = require('./routes/movies_and_series');
-const enabledServicesRouter = require('./routes/server_services/enabled_services');
+const enabledServicesRouter = require('./routes/server_services/enabled_services_route');
 
 // Setup all the routes
 app.use("/api/lp", lpapp);
