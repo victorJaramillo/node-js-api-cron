@@ -32,7 +32,6 @@ router.delete('/:id', [auth], async(req, res) => {
     }else {
         res.status(response.status).send(response)
     }
-    res.send(response)
 })
 
 module.exports = router;
