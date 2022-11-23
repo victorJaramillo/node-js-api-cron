@@ -26,11 +26,15 @@ router.get('/:id', [auth], async(req, res) => {
 
 router.delete('/:id', [auth], async(req, res) => {
     var {id} = req.params
-    const response = await service.deleteServiceByIds(id);
-    if(!response.status){
-        res.status(204).send(response)
+    if(!Object.keys(id)) {
+        const response = await service.deleteServiceByIds(id);
+        if(!response.status){
+            res.status(204).send(response)
+        }else {
+            res.status(response.status).send(response)
+        }
     }else {
-        res.status(response.status).send(response)
+        res.status(400).send({status: 400, message: "id from to remove is empty or null"})
     }
 })
 

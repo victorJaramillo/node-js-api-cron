@@ -56,7 +56,7 @@ app.use("/api/server/enabled-services", enabledServicesRouter);
 
 
 app.use('/', async(req, res) => {
-    res.send({message: 'Ok it work...', hostname: os.hostname()})
+    res.status(404).send({message: 'the resource not foud', hostname: os.hostname()})
 })
 
 // Configurations [express server]
