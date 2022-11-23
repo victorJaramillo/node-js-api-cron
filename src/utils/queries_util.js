@@ -124,6 +124,10 @@ const get_all_enabled_services_by_id  = (id) => {
     return get_all_enabled_services+` WHERE x.id = ${id}`
 }
 
+const get_enabled_services_by_name  = (name) => {
+    return get_all_enabled_services+` WHERE x.service_name LIKE '${name}'`
+}
+
 const delete_enabled_services_by_ids  = () => {
     return `DELETE FROM server_config.enabled_services WHERE ?`
 }
@@ -170,5 +174,6 @@ module.exports = {
     get_all_enabled_services,
     get_all_enabled_services_by_id,
     delete_enabled_services_by_ids,
-    save_new_enabled_service
+    save_new_enabled_service,
+    get_enabled_services_by_name
 }

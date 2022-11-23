@@ -148,6 +148,28 @@ const put_external_api_with_security = async function (endpoint, body, key) {
     return response;
 }
 
+const patch_external_api_with_security = async function (endpoint, body, key) {
+    var response = {};
+    await axios.patch(endpoint, body, { headers: { 'Authorization': key } }).then((resp) => {
+        response = resp.status;
+    }).catch(err => {
+        console.error(err.response.data);
+        response = {status: err.response.status,data: err.response.data};
+    });
+    return response;
+}
+
+const delete_external_api_with_security = async function (endpoint, key) {
+    var response = {};
+    await axios.delete(endpoint, { headers: { 'Authorization': key } }).then((resp) => {
+        response = resp.status;
+    }).catch(err => {
+        console.error(err.response.data);
+        response = {status: err.response.status,data: err.response.data};
+    });
+    return response;
+}
+
 async function get_hashed_user(body) {
     const hashed_password = await encode_hash_text(body.password);
     const user = { email: body.email, password: hashed_password };
@@ -168,6 +190,13 @@ const update_lp_videos = function (id) {
 
 const godaddy_url = function (url, dns) {
     return url.replace('{dns}', dns);
+}
+
+const buildGodaddyUrl = (url, arr) => {
+    arr.forEach(element => {
+        url = url+`/${element}`
+    });
+    return url
 }
 
 const encode_hash_text = async function (text) {
@@ -224,6 +253,8 @@ module.exports = {
     get_external_api,
     get_external_api_with_security,
     put_external_api_with_security,
+    patch_external_api_with_security,
+    delete_external_api_with_security,
     sendTextSlackNotification,
     encode_hash_text,
     find_user,
@@ -236,5 +267,6 @@ module.exports = {
     get_hashed_user,
     UUID,
     sendTextAndImageSlackNotification,
-    urlSrcFromStrHtml
+    urlSrcFromStrHtml,
+    buildGodaddyUrl
 };

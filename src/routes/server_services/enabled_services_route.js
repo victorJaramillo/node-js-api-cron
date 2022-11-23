@@ -11,7 +11,11 @@ router.get('/', async(req, res) => {
 router.post('/', [auth], async(req, res) => {
     const body = {service_name: req.body.service_name}
     const response = await service.saveNewEnabledService(body)
-    res.status(201).send(response)
+    if(!response.status){
+        res.status(201).send(response)
+    }else {
+        res.status(response.status).send(response)
+    }
 })
 
 router.get('/:id', [auth], async(req, res) => {
@@ -23,6 +27,11 @@ router.get('/:id', [auth], async(req, res) => {
 router.delete('/:id', [auth], async(req, res) => {
     var {id} = req.params
     const response = await service.deleteServiceByIds(id);
+    if(!response.status){
+        res.status(204).send(response)
+    }else {
+        res.status(response.status).send(response)
+    }
     res.send(response)
 })
 

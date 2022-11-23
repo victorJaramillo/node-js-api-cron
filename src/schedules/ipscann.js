@@ -7,6 +7,8 @@ const { mysqlConnection, query } = require('../database.js');
 const s3minio_service = require('../services/s3minio_service.js');
 const product_shop_service = require('../services/shop/product_shop_service.js');
 
+const cronJob = require('cron').CronJob;
+
 
 const SCHEDULED_TIME_STACK = process.env.SCHEDULED_TIME_STACK;
 const IS_PRODUCTION = process.env.IS_PRODUCTION;
@@ -16,12 +18,21 @@ router.get('/ip-scann', async (req, res) => {
     task.start();
     await Promise.all([ipScanner()]);
     res.send({ message: 'Ok' })
-
+    
 });
+
+// const myStartupJob = new cronJob(`*/${SCHEDULED_TIME_STACK} * * * *`,() => {
+//     console.log(`running a task every ${SCHEDULED_TIME_STACK} minutes`);
+//     ipScanner()
+// },() => {
+// },
+// true
+// ); 
+// myStartupJob.start()
 
 const task = cron.schedule(`*/${SCHEDULED_TIME_STACK} * * * *`, () => {
     ipScanner()
-});
+}, () => {}, true);
 
 const ipScanner = async () => {
     console.log(`running a task every ${SCHEDULED_TIME_STACK} minutes`);
