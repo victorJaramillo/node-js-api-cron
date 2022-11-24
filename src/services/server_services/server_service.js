@@ -57,7 +57,7 @@ const saveNewEnabledService = async (body) => {
             message: 'field suscessfully created',
             created_object: {
                 id: response.insertId,
-                service_name: body.service_name
+                details: bodyQuery
             }
         }
     } else {
