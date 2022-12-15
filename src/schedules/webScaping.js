@@ -34,11 +34,11 @@ const scraping_cuevana_movies = async () => {
     console.log(`running a Web Scraping task every ${WEB_SCRAPING_TIME_STACK} minutes`);
     try {
         const $ = await request({
-            uri: 'https://ww1.cuevana3.me/',
+            uri: 'https://cuevana3.ai/inicio',
             transform: body => cheerio.load(body)
         });
         var respArray = []
-        $('.TpRwCont .apt ul li').each((i, ele) => {
+        $('.slider .bd .apt ul li').each((i, ele) => {
             const image = $(ele).find('.Image .Objf');
 
             var image_arr = $(image).html();

@@ -101,6 +101,10 @@ const select_series = 'SELECT * FROM torrents.series s';
 
 const select_series_url = 'SELECT * FROM torrents.series_url s';
 
+const select_series_url_by_id = (id) => {
+    return select_series_url + ` WHERE id = ${id}`
+};
+
 const select_series_where_name = (name) => {
     return select_series+` WHERE s.serie_name LIKE '${name}'`
 }
@@ -175,5 +179,6 @@ module.exports = {
     get_all_enabled_services_by_id,
     delete_enabled_services_by_ids,
     save_new_enabled_service,
-    get_enabled_services_by_name
+    get_enabled_services_by_name,
+    select_series_url_by_id
 }

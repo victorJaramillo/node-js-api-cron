@@ -47,7 +47,45 @@ routerApis.get('/',[auth], async(req, res) => {
 
     series_response.map((x) => {
         const data = seriesUrlresponse.find(ele => ele.id_serie == x.id)
-        response.push({id: x.id, name: x.serie_name, season: x.season,url: data.url})
+        response.push({id: data.id, name: x.serie_name, season: x.season,url: data.url})
+    })
+    res.send(response);
+})
+
+routerApis.get('/:id',[auth], async(req, res) => {
+    const {id} = req.params
+    const seriesUrlresponse = await query(queries.select_series_url_by_id(id));
+    let id_series = []
+    let response = {}
+    seriesUrlresponse.map((x) =>{
+        id_series.push(x.id_serie);
+    })
+    if(id_series.length > 0) {
+        const series_response = await query(queries.select_series_where_ids(id_series))
+    
+        series_response.map((x) => {
+            const data = seriesUrlresponse.find(ele => ele.id_serie == x.id)
+            response = {id: data.id, name: x.serie_name, season: x.season,url: data.url}
+        })
+        res.send(response);
+    } else {
+        res.status(404).send({});
+    }
+})
+
+routerApis.delete('/:id',[auth], async(req, res) => {
+    const {id} = req.params
+    const seriesUrlresponse = await query(queries.select_series_url_by_id(id));
+    let id_series = []
+    let response = {}
+    seriesUrlresponse.map((x) =>{
+        id_series.push(x.id_serie);
+    })
+    const series_response = await query(queries.select_series_where_ids(id_series))
+
+    series_response.map((x) => {
+        const data = seriesUrlresponse.find(ele => ele.id_serie == x.id)
+        response = {id: x.id, name: x.serie_name, season: x.season,url: data.url}
     })
     res.send(response);
 })
