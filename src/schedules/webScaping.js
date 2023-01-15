@@ -34,7 +34,7 @@ const scraping_cuevana_movies = async () => {
     console.log(`running a Web Scraping task every ${WEB_SCRAPING_TIME_STACK} minutes`);
     try {
         const $ = await request({
-            uri: 'https://cuevana3.ai/inicio',
+            uri: 'https://cuevana3.be/inicio',
             transform: body => cheerio.load(body)
         });
         var respArray = []
@@ -76,7 +76,7 @@ const scraping_cuevana_movies = async () => {
         respArray.map(el => {
             const vote = Number.parseInt(el.vote)
             mysqlConnection.query(queryUtils.select_scraper_movies(el.title, el.date), (err, result) => {
-                if (!result[0]) {
+                if (undefined != result && !result[0]) {
                     if (el.date === '2022' && vote >= 3) {
                         utils.sendTextAndImageSlackNotification('[** CUEVANA **] ' + el.title, el.desc, el.date, el.qlty, el.image_arr[0], el.vote, el.href)
                         const objToSave = { title: el.title, desc: el.desc, vote: el.vote, time: el.time, date: el.date, qlty: el.qlty, link: el.href }
