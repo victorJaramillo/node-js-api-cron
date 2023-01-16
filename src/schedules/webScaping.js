@@ -77,7 +77,8 @@ const scraping_cuevana_movies = async () => {
             const vote = Number.parseInt(el.vote)
             mysqlConnection.query(queryUtils.select_scraper_movies(el.title, el.date), (err, result) => {
                 if (undefined != result && !result[0]) {
-                    if (el.date === '2022' && vote >= 3) {
+                    const years = ['2021','2022','2023']
+                    if ((years.includes(el.date)) && (vote >= 3)) {
                         utils.sendTextAndImageSlackNotification('[** CUEVANA **] ' + el.title, el.desc, el.date, el.qlty, el.image_arr[0], el.vote, el.href)
                         const objToSave = { title: el.title, desc: el.desc, vote: el.vote, time: el.time, date: el.date, qlty: el.qlty, link: el.href }
                         mysqlConnection.query(queryUtils.save_scraper_movies, objToSave, (err) => {
