@@ -26,7 +26,7 @@ router.get('/:id', [auth], async(req, res) => {
 
 router.delete('/:id', [auth], async(req, res) => {
     var {id} = req.params
-    if(!Object.keys(id)) {
+    if(id) {
         const response = await service.deleteServiceByIds(id);
         if(!response.status){
             res.status(204).send(response)

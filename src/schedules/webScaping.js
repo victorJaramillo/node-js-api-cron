@@ -6,7 +6,7 @@ const utils = require('../utils/utils.js');
 const { mysqlConnection, query } = require('../database.js');
 
 const WEB_SCRAPING_TIME_STACK = process.env.WEB_SCRAPING_TIME_STACK;
-const IS_PRODUCTION = process.env.IS_PRODUCTION;
+const IS_PRODUCTION = JSON.parse(process.env.IS_PRODUCTION);
 
 const request = require('request-promise');
 const cheerio = require('cheerio');
@@ -25,8 +25,11 @@ router.get('/scraping', async (req, res) => {
 
 const task = cron.schedule(`*/${WEB_SCRAPING_TIME_STACK} * * * *`, () => {
     console.log(`running a Web Scraping task every ${WEB_SCRAPING_TIME_STACK} minutes`);
-    scraping_cuevana_movies()
-    scraping_pelis_panda()
+    console.log('Is production process? => ',IS_PRODUCTION);
+    if(IS_PRODUCTION){
+        scraping_cuevana_movies()
+        scraping_pelis_panda()
+    }
     console.log(`Web Scraping excecution date ${today.toISOString()}`);
 })
 

@@ -125,6 +125,16 @@ const get_external_api = async function (endpoint) {
     return response;
 }
 
+const post_external_api = async function (endpoint) {
+    var response = {};
+    await axios.get(endpoint).then((resp) => {
+        response = resp;
+    }).catch(err => {
+        throw err;
+    });
+    return response;
+}
+
 const get_external_api_with_security = async function (endpoint, key, key_name) {
     var response = {};
     console.log(key_name === undefined);
@@ -242,6 +252,14 @@ const urlSrcFromStrHtml = (strHtml) => {
     return images
 }
 
+const validationBodyErrorMessage = (message) => {
+    return { validation_error: `the parameter ${message} is required in body` }
+}
+
+const validationNullOrEmptyErrorMessage = (message) => {
+    return { validation_error: `the parameter ${message} cannot be null or empty` }
+}
+
 
 module.exports = {
     getNewPublicIp,
@@ -268,5 +286,8 @@ module.exports = {
     UUID,
     sendTextAndImageSlackNotification,
     urlSrcFromStrHtml,
-    buildGodaddyUrl
+    buildGodaddyUrl,
+    validationBodyErrorMessage,
+    validationNullOrEmptyErrorMessage,
+    post_external_api
 };

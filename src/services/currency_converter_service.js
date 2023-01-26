@@ -13,4 +13,7 @@ const available_currencies = async () => {
     return await utils.get_external_api(url);
 }
 
-module.exports = {available_currencies}
+const available_currencies_v2 = async () => {
+
+}
+module.exports = {available_currencies, available_currencies_v2}

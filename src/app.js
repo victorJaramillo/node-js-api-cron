@@ -29,7 +29,9 @@ app.use(require('./schedules/webScaping'));
 const authRouter = require("./routes/auth_route");
 const webhook = require('./routes/webhook_route');
 const userRouter = require("./routes/user_route");
-const currency_convert = require("./routes/currency_converter_route");
+const currencyConvert = require("./routes/currency_converter_route");
+const currencyConvertV2 = require("./routes/currency_converter/currency_converter_v2_route");
+const chileanInfo = require("./routes/chilian_info/chilean_info_route");
 const lpapp = require('./routes/lp_app_route');
 const product = require('./routes/product_route');
 const s3minio = require('./routes/s3minio_route');
@@ -45,7 +47,7 @@ app.use("/api/webhook", webhook);
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
 app.use("/api/product", product);
-app.use("/api/v1/currconv", currency_convert);
+app.use("/api/v1/currconv", currencyConvert);
 app.use("/api/s3", s3minio);
 app.use("/api/v1/shop/user", userShopRouter);
 app.use("/api/v1/shop/address", addressRouter);
@@ -53,6 +55,8 @@ app.use("/api/v1/email", email);
 app.use("/api/v1/movies-and-series", moviesAndSeriesRouter);
 
 app.use("/api/server/enabled-services", enabledServicesRouter);
+app.use("/api/v2/currconv", currencyConvertV2);
+app.use("/api/v1/rut", chileanInfo);
 
 
 app.use('/', async(req, res) => {

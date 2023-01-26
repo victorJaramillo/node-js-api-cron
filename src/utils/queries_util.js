@@ -138,6 +138,16 @@ const delete_enabled_services_by_ids  = () => {
 
 const save_new_enabled_service = 'INSERT INTO server_config.enabled_services SET ?' 
 
+const save_new_chilean_info = 'INSERT INTO chilean_info.rut_info SET ?';
+const get_chilean_info = 'SELECT * FROM chilean_info.rut_info'
+const get_chilean_info_by_rut = (rut) => {
+    return `${get_chilean_info} WHERE rut LIKE '${rut}'`
+};
+
+const get_chilean_info_by_name_and_lastname = (name, lastname) => {
+    return `${get_chilean_info} WHERE name LIKE UPPER('%${name}%') AND name LIKE  UPPER('%${lastname}%')`
+}
+
 module.exports = {
     get_currconv_configs,
     get_available_configs,
@@ -180,5 +190,8 @@ module.exports = {
     delete_enabled_services_by_ids,
     save_new_enabled_service,
     get_enabled_services_by_name,
-    select_series_url_by_id
+    select_series_url_by_id,
+    save_new_chilean_info,
+    get_chilean_info_by_rut,
+    get_chilean_info_by_name_and_lastname
 }
