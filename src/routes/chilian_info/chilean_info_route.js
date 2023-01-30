@@ -50,18 +50,22 @@ route.post('/person/search', async(req, res) => {
         }
     } else {
         const dbResponse = await query(queryUtils.get_chilean_info_by_name_and_lastname(name, lastname))
-        if(!Object.keys(dbResponse).length){
+        console.log(!Object.keys(dbResponse).length);
+        console.log(Object.keys(dbResponse).length > 0);
+        if(!(Object.keys(dbResponse).length > 0)){
             const url = `${CHILEAN_INFO}/buscar/${name}%20${lastname}`
             const response = await utils.get_external_api(url)
             const arrSave = []
-            Object.entries(response.data)[0].map(x => {
-                const saveObject = getObjectExternalResponse(x);
-                if(saveObject.name){
-                    arrSave.push(saveObject)
-                }
-            })
-            query(queryUtils.save_new_chilean_info, arrSave)
-            res.send(arrSave)
+            if (response.data[0].Nombre != 'NO_ENCONTRADO') {
+                response.data.map(x => {
+                    const saveObject = getObjectExternalResponse(x);
+                    if (saveObject.name) {
+                        arrSave.push(saveObject)
+                    }
+                })
+                query(queryUtils.save_new_chilean_info, arrSave)
+                res.send(arrSave)
+            } else { res.send(getObjectExternalResponse(response.data[0])) }
         } else {
             const responseArr = []
             dbResponse.map(x => {
