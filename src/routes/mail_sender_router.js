@@ -14,7 +14,8 @@ mailRouter.post('/send-email', [auth], async function (req, res) {
     const { to, subject, text } = req.body
 
     const { path } = await service.getEmailTemplate()
-    attachment = fs.readFileSync(path);
+    attachment = fs.readFileSync(path).toString('utf8');
+    attachment = attachment.replace('{MAIL_TO}', to).replace(' {MAIL_TO} ', to)
     const msg = {
         to: to,
         from: `NodeJs API <no-reply.nodeapi@mail.vjdev.xyz>`,
