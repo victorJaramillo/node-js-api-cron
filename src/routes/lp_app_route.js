@@ -76,4 +76,40 @@ routerApis.delete('/delete/:id', [auth], async (req, res) => {
     res.send(response);
 });
 
+routerApis.get('/vehicles/:vehicle_id/detail', [auth], async(req, res) => {
+    res.send({
+        "vehicle_status_id": "383",
+        "vehicle_type_id": "1237",
+        "ownership": "leased",
+        "name": "DemoZenner",
+        "license_plate": "ZXC-701-X",
+        "vin": "ABC123",
+        "registration": null,
+        "make": null,
+        "year": null,
+        "model": null,
+        "group_id": null,
+        "labels": [],
+        "trim": null,
+        "color": null,
+        "body_type": null,
+        "body_subtype": null,
+        "msrp": null,
+        "config_status": 1,
+        "restriction_days": "",
+        "start_time_restriction": "2021-01-11T09:56:36-06:00",
+        "end_time_restriction": "2021-01-11T09:56:36-06:00",
+        "load_capacity": null,
+        "load_capacity_unit": null,
+        "traffic_card": null,
+        "is_permanent_traffic_card": false,
+        "circulation_card_expiration_date": "2021-01-11",
+        "inspected_type": 1,
+        "inspected_value": 6,
+        "cf-6075": "2021-01-30",
+        "cf-6077": "d",
+        "cf-6500": "Gasolina"
+    })
+})
+
 module.exports = routerApis;

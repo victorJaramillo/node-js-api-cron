@@ -42,7 +42,7 @@ const moviesAndSeriesRouter = require('./routes/movies_and_series');
 const enabledServicesRouter = require('./routes/server_services/enabled_services_route');
 
 // Setup all the routes
-app.use("/api/lp", lpapp);
+app.use("/pulpo/api/v1", lpapp);
 app.use("/api/webhook", webhook);
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
