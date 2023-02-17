@@ -76,7 +76,7 @@ routerApis.delete('/delete/:id', [auth], async (req, res) => {
     res.send(response);
 });
 
-routerApis.get('/vehicles/:vehicle_id/detail', [auth], async(req, res) => {
+routerApis.get('/vehicles/:vehicle_id/detail', async(req, res) => {
     res.send({
         "vehicle_status_id": "383",
         "vehicle_type_id": "1237",
