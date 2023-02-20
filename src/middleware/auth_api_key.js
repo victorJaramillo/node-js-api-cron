@@ -9,7 +9,7 @@ const { query } = require('../database')
 
 module.exports = async (req, res, next) => {
     const apikey = req.header("apikey")
-    if(!JSON.parse(IS_PRODUCTION)){
+    if(SON.parse(IS_PRODUCTION)){
         if (!apikey) return res.status(401).send({
             error: "unauthorized"
         });
