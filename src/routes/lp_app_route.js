@@ -4,8 +4,10 @@ const routerApis = express.Router();
 const mysql = require('../database.js');
 
 const auth = require("../middleware/auth");
+const auth_api_key = require("../middleware/auth_api_key");
 
 const utils = require('../utils/utils.js');
+const Crypto = require('crypto')
 
 
 routerApis.get('/all', (req, res) => {
@@ -76,7 +78,7 @@ routerApis.delete('/delete/:id', [auth], async (req, res) => {
     res.send(response);
 });
 
-routerApis.get('/vehicles/:vehicle_id/detail', async(req, res) => {
+routerApis.get('/vehicles/:vehicle_id/detail', [auth_api_key], async(req, res) => {
     res.send({
         "vehicle_status_id": "383",
         "vehicle_type_id": "1237",

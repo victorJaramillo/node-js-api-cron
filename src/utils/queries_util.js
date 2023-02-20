@@ -148,6 +148,14 @@ const get_chilean_info_by_name_and_lastname = (name, lastname) => {
     return `${get_chilean_info} WHERE name LIKE UPPER('%${name}%') AND name LIKE  UPPER('%${lastname}%')`
 }
 
+const get_api_key_by_value = (value) => {
+    return `SELECT decoded_key_value FROM server_config.apikeys a WHERE a.key_value LIKE '${value}'`
+}
+
+const create_api_key = () => {
+    return `INSERT INTO server_config.apikeys SET ?`
+}
+
 module.exports = {
     get_currconv_configs,
     get_available_configs,
@@ -193,5 +201,7 @@ module.exports = {
     select_series_url_by_id,
     save_new_chilean_info,
     get_chilean_info_by_rut,
-    get_chilean_info_by_name_and_lastname
+    get_chilean_info_by_name_and_lastname,
+    get_api_key_by_value,
+    create_api_key
 }

@@ -260,6 +260,21 @@ const validationNullOrEmptyErrorMessage = (message) => {
     return { validation_error: `the parameter ${message} cannot be null or empty` }
 }
 
+const encode_base64 = (value) => {
+    const encoded = Buffer.from(value, 'utf8').toString('base64')
+    return encoded
+}
+
+const decode_base64 = (value) => {
+    const decoded = Buffer.from(value, 'base64').toString('utf8')
+    return decoded
+}
+
+const validate_bcript = async (text, hashed_test) => {
+    var valid = await bcrypt.compare(text, hashed_test)
+    return valid
+}
+
 
 module.exports = {
     getNewPublicIp,
@@ -289,5 +304,8 @@ module.exports = {
     buildGodaddyUrl,
     validationBodyErrorMessage,
     validationNullOrEmptyErrorMessage,
-    post_external_api
+    post_external_api,
+    encode_base64,
+    decode_base64,
+    validate_bcript
 };

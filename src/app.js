@@ -40,6 +40,7 @@ const addressRouter = require('./routes/address_route');
 const email = require('./routes/mail_sender_router');
 const moviesAndSeriesRouter = require('./routes/movies_and_series');
 const enabledServicesRouter = require('./routes/server_services/enabled_services_route');
+const apiKeyGenerator = require('./routes/api_key/api_key_generator');
 
 // Setup all the routes
 app.use("/pulpo/api/v1", lpapp);
@@ -57,6 +58,7 @@ app.use("/api/v1/movies-and-series", moviesAndSeriesRouter);
 app.use("/api/server/enabled-services", enabledServicesRouter);
 app.use("/api/v2/currconv", currencyConvertV2);
 app.use("/api/v1/rut", chileanInfo);
+app.use("/api/v1/apikey", apiKeyGenerator);
 
 
 app.use('/', async(req, res) => {
