@@ -24,7 +24,7 @@ router.post("", async (req, res) => {
     } else {
         // Compare the password with the password in the database
         try {
-            var valid = await bcrypt.compare(password, user.password)
+            var valid = await utils.validate_bcript(password, user.password)
             if (!valid) { res.status(400).send(INVALID_CREDELTIALS_MESSAGE) }
             delete user.password;
             const token = jwt.sign({
