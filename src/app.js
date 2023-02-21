@@ -3,6 +3,7 @@ bodyParser = require('body-parser');
 const os = require('os');
 const cors = require('cors');
 const listEndpoints = require("express-list-endpoints");
+const IS_PRODUCTION = process.env.IS_PRODUCTION;
 
 require('dotenv').config()
 
@@ -60,10 +61,11 @@ app.use("/api/v2/currconv", currencyConvertV2);
 app.use("/api/v1/rut", chileanInfo);
 app.use("/api/v1/apikey", apiKeyGenerator);
 
-
-// app.use('/', async(req, res) => {
-//     res.status(404).send({message: 'the resource not foud', hostname: os.hostname()})
-// })
+if(IS_PRODUCTION){
+    app.use('/', async(req, res) => {
+        res.status(404).send({message: 'the resource not found', hostname: os.hostname()})
+    })
+}
 
 // Configurations [express server]
 app.listen(app.get('port'), () => {
