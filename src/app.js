@@ -1,11 +1,10 @@
-const express = require('express');
+const express = require('express'),
+bodyParser = require('body-parser');
 const os = require('os');
 const cors = require('cors');
 const listEndpoints = require("express-list-endpoints");
 
 require('dotenv').config()
-
-const bodyParser = require('body-parser');
 
 // Settings
 const app = express();
@@ -41,6 +40,7 @@ const email = require('./routes/mail_sender_router');
 const moviesAndSeriesRouter = require('./routes/movies_and_series');
 const enabledServicesRouter = require('./routes/server_services/enabled_services_route');
 const apiKeyGenerator = require('./routes/api_key/api_key_generator');
+const swaggerDocs = require('./swagger')
 
 // Setup all the routes
 app.use("/pulpo/api/v1", lpapp);
@@ -61,14 +61,15 @@ app.use("/api/v1/rut", chileanInfo);
 app.use("/api/v1/apikey", apiKeyGenerator);
 
 
-app.use('/', async(req, res) => {
-    res.status(404).send({message: 'the resource not foud', hostname: os.hostname()})
-})
+// app.use('/', async(req, res) => {
+//     res.status(404).send({message: 'the resource not foud', hostname: os.hostname()})
+// })
 
 // Configurations [express server]
 app.listen(app.get('port'), () => {
     console.log(`App listen on port ${app.get('port')}`);
     console.log('registered_endpoints');
+    swaggerDocs(app)
     listEndpoints(app).forEach(element => {
         console.log({'endpoint': element.path, 'methods': element.methods});
     });

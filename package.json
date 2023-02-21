@@ -24,7 +24,10 @@
     "minio": "^7.0.27",
     "mysql": "^2.18.1",
     "node-cron": "^3.0.0",
-    "request-promise": "^4.2.6"
+    "request-promise": "^4.2.6",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^4.6.1",
+    "yaml": "^2.2.1"
   },
   "devDependencies": {
     "dotenv": "^16.0.0",
