@@ -8,6 +8,8 @@ const mysqlConnection = require('../database.js');
 
 const auth = require("../middleware/auth");
 
+const service = require('../services/currency_converter_service')
+
 currencyRouter.post('/', [auth], async (req, res) => {
     const { unit, quantity } = req.body;
     if (!unit) {
@@ -22,21 +24,19 @@ currencyRouter.post('/', [auth], async (req, res) => {
         const api_configs = `${server}${endpoint}${api_key}`;
         const url = api_configs.replace('{coin}', upper_unit)
         const response = await utils.get_external_api(url);
-        if(quantity && quantity != '' ){
+        if (quantity && quantity != '') {
             const responseMap = new Map(Object.entries(response.data));
-            total = (responseMap.get(upper_unit)*quantity);
+            total = (responseMap.get(upper_unit) * quantity);
             responseMap.set(`${upper_unit}`, Math.round(total));
-            
+
             res.send(Object.fromEntries(responseMap));
-        } else 
+        } else
             res.send(response.data);
     }
 })
 
 currencyRouter.get('/available', [auth], async (req, res) => {
-    const { server, api_key, endpoint } = await execute_query(queries_util.get_available_configs);
-    const url = `${server}${endpoint}${api_key}`;
-    const response = await utils.get_external_api(url);
+    const response = await service.available_currencies()
     res.send(response.data);
 })
 

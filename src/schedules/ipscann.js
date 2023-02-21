@@ -4,17 +4,39 @@ const router = express.Router();
 const utils = require('../utils/utils.js');
 
 const { mysqlConnection, query } = require('../database.js');
+const s3minio_service = require('../services/s3minio_service.js');
+const product_shop_service = require('../services/shop/product_shop_service.js');
+
+const cronJob = require('cron').CronJob;
+
 
 const SCHEDULED_TIME_STACK = process.env.SCHEDULED_TIME_STACK;
 const IS_PRODUCTION = process.env.IS_PRODUCTION;
+const bucketName = process.env.MINIO_BUCKET;
 
-router.post('/scheduler', async (req, res) => {
+router.get('/ip-scann', async (req, res) => {
     task.start();
+    await Promise.all([ipScanner()]);
     res.send({ message: 'Ok' })
+    
 });
 
+// const myStartupJob = new cronJob(`*/${SCHEDULED_TIME_STACK} * * * *`,() => {
+//     console.log(`running a task every ${SCHEDULED_TIME_STACK} minutes`);
+//     ipScanner()
+// },() => {
+// },
+// true
+// ); 
+// myStartupJob.start()
+
 const task = cron.schedule(`*/${SCHEDULED_TIME_STACK} * * * *`, () => {
+    ipScanner()
+}, () => {}, true);
+
+const ipScanner = async () => {
     console.log(`running a task every ${SCHEDULED_TIME_STACK} minutes`);
+    public_url_images()
     const timeElapsed = Date.now();
     const today = new Date(timeElapsed);
     if (JSON.parse(IS_PRODUCTION)) {
@@ -49,7 +71,7 @@ const task = cron.schedule(`*/${SCHEDULED_TIME_STACK} * * * *`, () => {
         });
     }
     console.log(`excecution date ${today.toISOString()}`);
-});
+}
 
 const update_godaddy_records = function (new_ip) {
     var response = {};
@@ -86,6 +108,32 @@ const update_godaddy_records = function (new_ip) {
         }
     });
     return response
+}
+
+const public_url_images = async () => {
+    const timeElapsed = Date.now()
+    const start_date = new Date(timeElapsed)
+    console.log(`Start date excecution ${start_date.toISOString()}`)
+    if (JSON.parse(IS_PRODUCTION)) {
+        const update_public_url = await product_shop_service.get_products_images()
+        for (const img of update_public_url) {
+
+            const { file_name, last_update } = img
+            var diff = start_date.getTime() - last_update.getTime()
+            diff = diff / (1000 * 3600 * 24)
+            if (diff >= 2) {
+                const { public_url } = await s3minio_service.public_url(bucketName, file_name)
+                const product_image = { last_update: start_date, url_publica: public_url }
+
+                const update_public_url = await product_shop_service.update_public_url(file_name, product_image)
+
+                console.log(JSON.stringify(`file ${file_name}, ${update_public_url.message}`))
+            }
+        }
+
+    }
+    const end_date = new Date(timeElapsed)
+    console.log(`End date excecution ${end_date.toISOString()}`)
 }
 
 

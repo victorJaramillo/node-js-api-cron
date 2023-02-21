@@ -1,10 +1,11 @@
-const express = require('express');
+const express = require('express'),
+bodyParser = require('body-parser');
+const os = require('os');
 const cors = require('cors');
 const listEndpoints = require("express-list-endpoints");
+const IS_PRODUCTION = process.env.IS_PRODUCTION;
 
 require('dotenv').config()
-
-const bodyParser = require('body-parser');
 
 // Settings
 const app = express();
@@ -21,35 +22,57 @@ app.set('port', process.env.NODE_PORTS);
 app.use(bodyParser.json());
 app.use(fileUpload());
 
-// Middleware
 app.use(require('./schedules/ipscann'));
+app.use(require('./schedules/webScaping'));
 
+// Middleware
 const authRouter = require("./routes/auth_route");
 const webhook = require('./routes/webhook_route');
 const userRouter = require("./routes/user_route");
-const currency_convert = require("./routes/currency_converter_route");
+const currencyConvert = require("./routes/currency_converter_route");
+const currencyConvertV2 = require("./routes/currency_converter/currency_converter_v2_route");
+const chileanInfo = require("./routes/chilian_info/chilean_info_route");
 const lpapp = require('./routes/lp_app_route');
 const product = require('./routes/product_route');
 const s3minio = require('./routes/s3minio_route');
 const userShopRouter = require('./routes/user_shop_router');
 const addressRouter = require('./routes/address_route');
+const email = require('./routes/mail_sender_router');
+const moviesAndSeriesRouter = require('./routes/movies_and_series');
+const enabledServicesRouter = require('./routes/server_services/enabled_services_route');
+const apiKeyGenerator = require('./routes/api_key/api_key_generator');
+const swaggerDocs = require('./swagger')
 
 // Setup all the routes
-app.use("/api/lp", lpapp);
+app.use("/pulpo/api/v1", lpapp);
 app.use("/api/webhook", webhook);
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
 app.use("/api/product", product);
-app.use("/api/v1/currconv", currency_convert);
+app.use("/api/v1/currconv", currencyConvert);
 app.use("/api/s3", s3minio);
 app.use("/api/v1/shop/user", userShopRouter);
 app.use("/api/v1/shop/address", addressRouter);
+app.use("/api/v1/email", email);
+app.use("/api/v1/movies-and-series", moviesAndSeriesRouter);
+
+app.use("/api/server/enabled-services", enabledServicesRouter);
+app.use("/api/v2/currconv", currencyConvertV2);
+app.use("/api/v1/rut", chileanInfo);
+app.use("/api/v1/apikey", apiKeyGenerator);
+
+if(IS_PRODUCTION){
+    app.use('/', async(req, res) => {
+        res.status(404).send({message: 'the resource not found', hostname: os.hostname()})
+    })
+}
 
 // Configurations [express server]
 app.listen(app.get('port'), () => {
     console.log(`App listen on port ${app.get('port')}`);
     console.log('registered_endpoints');
+    swaggerDocs(app)
     listEndpoints(app).forEach(element => {
-        console.log({'path': element.path, 'methods': element.methods});
+        console.log({'endpoint': element.path, 'methods': element.methods});
     });
 });

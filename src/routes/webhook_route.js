@@ -23,7 +23,7 @@ routerWebHook.get('/send', (req, resp) => {
     //     resp.send(number);
     // }
 
-    utils.sendTextSlackNotification('PRUEBA').then((data) => {
+    utils.sendTextAndImageSlackNotification('PRUEBA').then((data) => {
         resp.send((data))
     });
 });
