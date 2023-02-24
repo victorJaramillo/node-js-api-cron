@@ -16,11 +16,14 @@ mailRouter.post('/send-email', [auth], async function (req, res) {
     const { path } = await service.getEmailTemplate()
     attachment = fs.readFileSync(path).toString('utf8');
     attachment = attachment.replace('{MAIL_TO}', to).replace(' {MAIL_TO} ', to)
+
+    const {name, last_name} = await service.getInfoToSendMail(to)
+    attachment = attachment.replace('{NAME}', name).replace('{LAST_NAME}', last_name)
+    
     const msg = {
         to: to,
         from: `NodeJs API <no-reply.nodeapi@mail.vjdev.xyz>`,
         subject: subject,
-        text: text,
         html: `${attachment}`
     }
     sendgrid.setApiKey(SENDGRID_API_KEY)
