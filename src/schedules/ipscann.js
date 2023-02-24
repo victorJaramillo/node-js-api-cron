@@ -39,7 +39,7 @@ const ipScanner = async () => {
     public_url_images()
     const timeElapsed = Date.now();
     const today = new Date(timeElapsed);
-    if (!JSON.parse(IS_PRODUCTION)) {
+    if (JSON.parse(IS_PRODUCTION)) {
         utils.getNewPublicIp().then(ip => {
             const { public_ip } = ip;
             mysqlConnection.query(utils.config_server_select_by_ip(public_ip), (error, result) => {
