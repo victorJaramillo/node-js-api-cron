@@ -275,6 +275,10 @@ const validate_bcript = async (text, hashed_test) => {
     return valid
 }
 
+const query_respose_to_json = (query_response) => {
+    return JSON.parse(JSON.stringify(query_response))
+}
+
 
 module.exports = {
     getNewPublicIp,
@@ -307,5 +311,6 @@ module.exports = {
     post_external_api,
     encode_base64,
     decode_base64,
-    validate_bcript
+    validate_bcript,
+    query_respose_to_json
 };

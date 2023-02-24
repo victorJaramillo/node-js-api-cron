@@ -156,6 +156,10 @@ const create_api_key = () => {
     return `INSERT INTO server_config.apikeys SET ?`
 }
 
+const get_user_info_by_user_api_id = (userId) => {
+    return `SELECT x.* FROM edipartstore.usuario x WHERE x.api_user_id = ${userId}`
+}
+
 module.exports = {
     get_currconv_configs,
     get_available_configs,
@@ -203,5 +207,6 @@ module.exports = {
     get_chilean_info_by_rut,
     get_chilean_info_by_name_and_lastname,
     get_api_key_by_value,
-    create_api_key
+    create_api_key,
+    get_user_info_by_user_api_id
 }
