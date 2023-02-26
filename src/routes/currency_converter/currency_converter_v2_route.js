@@ -9,10 +9,9 @@ const auth = require("../../middleware/auth");
 const service = require('../../services/currency_converter_service')
 
 currencyRouter.get('/available/cl', async (req, res) => {
-    const response = await utils.get_external_api(`${process.env.LIBRE_API}/economy/indicators`)
+    const response = await utils.get_external_api(`${process.env.API_MIINDICADOR}`)
     const {data, status} = response
-    const available = Object.keys(data.data)
-    const responseBody = {uf: data.data.uf, dollar: data.data.dollar, available: available}
+    const responseBody = {uf: data.uf, dollar: data.dolar, available: data}
     res.status(status).send(responseBody)
 })
 currencyRouter.post('/available/cl', async (req, res) => {
