@@ -7,6 +7,8 @@ const auth_apikey = require("../middleware/auth_api_key");
 
 
 const queries = require('../utils/queries_util.js');
+const utils = require('../utils/utils');
+
 
 routerApis.post('/',[auth_apikey], async(req, res) => {
     const body = req.body;
@@ -75,19 +77,22 @@ routerApis.get('/:id',[auth_apikey], async(req, res) => {
 
 routerApis.delete('/:id',[auth_apikey], async(req, res) => {
     const {id} = req.params
-    const seriesUrlresponse = await query(queries.select_series_url_by_id(id));
-    let id_series = []
-    let response = {}
-    seriesUrlresponse.map((x) =>{
-        id_series.push(x.id_serie);
-    })
-    const series_response = await query(queries.select_series_where_ids(id_series))
+    var seriesUrlresponse = await query(queries.select_series_url_by_id(id));
+    seriesUrlresponse = utils.query_respose_to_json(seriesUrlresponse)
+    if(seriesUrlresponse[0]){
+        const {id_serie}= seriesUrlresponse[0]
+        var deletedSerieUrl = await query(queries.delete_serie_or_movie(id));
+        await query(queries.delete_serie_or_movie_name(id_serie));
+        deletedSerieUrl = utils.query_respose_to_json(deletedSerieUrl)
 
-    series_response.map((x) => {
-        const data = seriesUrlresponse.find(ele => ele.id_serie == x.id)
-        response = {id: x.id, name: x.serie_name, season: x.season,url: data.url}
-    })
-    res.send(response);
+        const {affectedRows} = deletedSerieUrl
+        if(Boolean(affectedRows)){
+            res.send({message: 'field successfully removed'});
+        }    
+    }
+    else {
+        res.status(403).send({message: 'no field removed'});
+    }
 })
 
 module.exports = routerApis;
