@@ -1,12 +1,11 @@
 const express = require('express');
 const routerApis = express.Router();
 
-const {mysqlConnection, query} = require('../database.js');
+const {query} = require('../database.js');
 
-const auth = require("../middleware/auth");
 const auth_apikey = require("../middleware/auth_api_key");
 
-const utils = require('../utils/utils.js');
+
 const queries = require('../utils/queries_util.js');
 
 routerApis.post('/',[auth_apikey], async(req, res) => {
@@ -74,7 +73,7 @@ routerApis.get('/:id',[auth_apikey], async(req, res) => {
     }
 })
 
-routerApis.delete('/:id',[auth], async(req, res) => {
+routerApis.delete('/:id',[auth_apikey], async(req, res) => {
     const {id} = req.params
     const seriesUrlresponse = await query(queries.select_series_url_by_id(id));
     let id_series = []
