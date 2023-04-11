@@ -41,6 +41,7 @@ const email = require('./routes/mail_sender_router');
 const moviesAndSeriesRouter = require('./routes/movies_and_series');
 const enabledServicesRouter = require('./routes/server_services/enabled_services_route');
 const apiKeyGenerator = require('./routes/api_key/api_key_generator');
+const henaojara = require('./schedules/anime_scraping/scraping_henaojara')
 const swaggerDocs = require('./swagger')
 
 // Setup all the routes
@@ -60,6 +61,8 @@ app.use("/api/server/enabled-services", enabledServicesRouter);
 app.use("/api/v2/currconv", currencyConvertV2);
 app.use("/api/v1/rut", chileanInfo);
 app.use("/api/v1/apikey", apiKeyGenerator);
+
+app.use('/api/v1/animeonline', henaojara)
 
 if(IS_PRODUCTION){
     app.use('/', async(req, res) => {

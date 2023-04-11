@@ -168,6 +168,16 @@ const delete_serie_or_movie_name = (id) => {
     return `DELETE FROM torrents.series WHERE id = ${id}`
 }
 
+const enable_anime_scraping = 'SELECT * FROM web_scraping.anime a WHERE a.enable = TRUE';
+
+const get_enabled_anime_field = (anime_id) => {
+    return `SELECT * FROM web_scraping.anime_scraping as2 WHERE as2.anime_id = ${anime_id}`
+}
+
+const insert_enabled_anime_field = () => {
+    return `INSERT INTO web_scraping.anime_scraping SET ?`
+}
+
 module.exports = {
     get_currconv_configs,
     get_available_configs,
@@ -218,5 +228,8 @@ module.exports = {
     create_api_key,
     get_user_info_by_user_api_id,
     delete_serie_or_movie,
-    delete_serie_or_movie_name
+    delete_serie_or_movie_name,
+    enable_anime_scraping,
+    get_enabled_anime_field,
+    insert_enabled_anime_field
 }

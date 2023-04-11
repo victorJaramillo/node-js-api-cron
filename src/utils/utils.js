@@ -51,57 +51,21 @@ const sendTextSlackNotification = async function (text) {
 
 const sendTextAndImageSlackNotification = async function (title, desc, date, quality, image_url, vote, link) {
     var response = {};
-    const body = {
-        "type": "home",
-        "blocks": [
-            {
-                "type": "actions",
-                "elements": [
-                    {
-                        "type": "button",
-                        "text": {
-                            "type": "plain_text",
-                            "text": ":movie_camera: NEW MOVIE DETECTED",
-                            "emoji": true
-                        },
-                        "style": "primary",
-                        "value": "approve"
-                    }
-                ]
-            },
-            {
-                "type": "section",
-                "text": {
-                    "type": "mrkdwn",
-                    "text": `*Title:* ${title}\n *Description*: *${desc}*\n *Date*: *${date}*\n *Quality*: *${quality}*\n*Vote*: ${vote}:star:\n*Link:* ${link}`
-                },
-                "accessory": {
-                    "type": "image",
-                    "image_url": `${image_url}`,
-                    "alt_text": "plane"
-                }
-            },
-            {
-                "type": "actions",
-                "elements": [
-                    {
-                        "type": "button",
-                        "text": {
-                            "type": "plain_text",
-                            "text": ":movie_camera: NEW MOVIE DETECTED",
-                            "emoji": true
-                        },
-                        "style": "primary",
-                        "value": "approve"
-                    }
-                ]
-            },
-            {
-                "type": "divider"
-            }
-        ]
-    };
+    const body = get_body_message(title, desc, date, quality, vote, link, image_url);
     await axios.post(process.env.SLACK_WEBHOOK_WEB_SCRAPING,
+        body
+    ).then(res => {
+        response = slack_message_response(res.status);
+    }).catch(err => {
+        throw err
+    })
+    return response;
+}
+
+const sendNewAnimeNotification = async function (title, desc, image_url, link) {
+    var response = {};
+    const body = get_body_message(title, desc, '', '', '', link, image_url);
+    await axios.post(process.env.SLACK_ANIME_NOTIFICATION,
         body
     ).then(res => {
         response = slack_message_response(res.status);
@@ -178,6 +142,59 @@ const delete_external_api_with_security = async function (endpoint, key) {
         response = {status: err.response.status,data: err.response.data};
     });
     return response;
+}
+
+function get_body_message(title, desc, date, quality, vote, link, image_url) {
+    return {
+        "type": "home",
+        "blocks": [
+            {
+                "type": "actions",
+                "elements": [
+                    {
+                        "type": "button",
+                        "text": {
+                            "type": "plain_text",
+                            "text": ":movie_camera: NEW MOVIE DETECTED",
+                            "emoji": true
+                        },
+                        "style": "primary",
+                        "value": "approve"
+                    }
+                ]
+            },
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": `*Title:* ${title}\n *Description*: *${desc}*\n *Date*: *${date}*\n *Quality*: *${quality}*\n*Vote*: ${vote}:star:\n*Link:* ${link}`
+                },
+                "accessory": {
+                    "type": "image",
+                    "image_url": `${image_url}`,
+                    "alt_text": "plane"
+                }
+            },
+            {
+                "type": "actions",
+                "elements": [
+                    {
+                        "type": "button",
+                        "text": {
+                            "type": "plain_text",
+                            "text": ":movie_camera: NEW MOVIE DETECTED",
+                            "emoji": true
+                        },
+                        "style": "primary",
+                        "value": "approve"
+                    }
+                ]
+            },
+            {
+                "type": "divider"
+            }
+        ]
+    };
 }
 
 async function get_hashed_user(body) {
@@ -312,5 +329,6 @@ module.exports = {
     encode_base64,
     decode_base64,
     validate_bcript,
-    query_respose_to_json
+    query_respose_to_json,
+    sendNewAnimeNotification
 };
