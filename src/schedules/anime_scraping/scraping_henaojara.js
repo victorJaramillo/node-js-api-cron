@@ -17,6 +17,20 @@ router.get('/scraping', async (req, res) => {
     const response = await for_enabled_anime(respo)
     res.send(response)
 })
+router.post('/scraping/new_scraping', async (req, res) => {
+    const {title, url} = req.body
+    try {
+        var find_configured_anime = await query(queryUtils.get_enabled_anime_by_url(url))
+        find_configured_anime = utils.query_respose_to_json(find_configured_anime)
+        if(!find_configured_anime[0]){
+            const object_to_save = {title:`${title}`, url:`${url}`, enable: true}
+            await query(queryUtils.insert_enabled_anime(), object_to_save)
+            res.status(201).send({message:`new scraping configured`, title:`${title}`, url:`${url}`})
+        }else res.status(400).send({message:`this anime is already configured`})
+    } catch (error) {
+        res.status(400).send(error)
+    }
+})
 
 const task = cron.schedule(`*/${WEB_SCRAPING_TIME_STACK} * * * *`, async () => {
     if(IS_PRODUCTION){

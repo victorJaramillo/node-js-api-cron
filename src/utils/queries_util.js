@@ -168,7 +168,9 @@ const delete_serie_or_movie_name = (id) => {
     return `DELETE FROM torrents.series WHERE id = ${id}`
 }
 
-const enable_anime_scraping = 'SELECT * FROM web_scraping.anime a WHERE a.enable = TRUE';
+const select_anime_scraping = `SELECT * FROM web_scraping.anime a`
+
+const enable_anime_scraping =  `${select_anime_scraping} WHERE a.enable = TRUE`;
 
 const get_enabled_anime_field = (anime_id) => {
     return `SELECT * FROM web_scraping.anime_scraping as2 WHERE as2.anime_id = ${anime_id}`
@@ -176,6 +178,14 @@ const get_enabled_anime_field = (anime_id) => {
 
 const insert_enabled_anime_field = () => {
     return `INSERT INTO web_scraping.anime_scraping SET ?`
+}
+
+const insert_enabled_anime = () => {
+    return `INSERT INTO web_scraping.anime SET ?`
+}
+
+const get_enabled_anime_by_url = (value) => {
+    return `${select_anime_scraping} WHERE a.url LIKE '${value}'`
 }
 
 module.exports = {
@@ -231,5 +241,7 @@ module.exports = {
     delete_serie_or_movie_name,
     enable_anime_scraping,
     get_enabled_anime_field,
-    insert_enabled_anime_field
+    insert_enabled_anime_field,
+    insert_enabled_anime,
+    get_enabled_anime_by_url
 }
