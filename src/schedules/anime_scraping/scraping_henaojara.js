@@ -5,19 +5,21 @@ const utils = require('../../utils/utils.js');
 const { query } = require('../../database.js');
 var cron = require('node-cron');
 
+const auth_apikey = require("../../middleware/auth_api_key");
+
 const WEB_SCRAPING_TIME_STACK = process.env.WEB_SCRAPING_TIME_STACK;
 const IS_PRODUCTION = JSON.parse(process.env.IS_PRODUCTION);
 
 const request = require('request-promise');
 const cheerio = require('cheerio');
 
-router.get('/scraping', async (req, res) => {
+router.get('/scraping',[auth_apikey], async (req, res) => {
     task.start();
     const respo = await get_enabled_anime_to_scraping()
     const response = await for_enabled_anime(respo)
     res.send(response)
 })
-router.post('/scraping/new_scraping', async (req, res) => {
+router.post('/scraping/new_scraping',[auth_apikey], async (req, res) => {
     const {title, url} = req.body
     try {
         var find_configured_anime = await query(queryUtils.get_enabled_anime_by_url(url))
