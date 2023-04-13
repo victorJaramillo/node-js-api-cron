@@ -61,19 +61,22 @@ const scraping_series = async (url) => {
                 const cap_name = $(chapter).find('.episodiotitle a')
                 const cap_link = $(chapter).find('.episodiotitle a').attr('href')
                 var season_namber = $(cap_num).text().toString()
-                season_namber = season_namber.split('-')
-                respArray.push(
-                    {
-                        title: title,
-                        season: parseInt(season_namber[0].trim()),
-                        chapter_name: $(cap_name).text(),
-                        chapter_number: parseInt(season_namber[1].trim()),
-                        chapter_image: cap_img,
-                        chapter_link: cap_link
+                if(season_namber != ''){
 
-                    })
-                const elementExists = seasons.includes(parseInt(season_namber[0].trim()))
-                if (!elementExists) seasons.push(parseInt(season_namber[0].trim()))
+                    season_namber = season_namber.split('-')
+                    respArray.push(
+                        {
+                            title: title,
+                            season: parseInt(season_namber[0].trim()),
+                            chapter_name: $(cap_name).text(),
+                            chapter_number: parseInt(season_namber[1].trim()),
+                            chapter_image: cap_img,
+                            chapter_link: cap_link
+                        }
+                    )
+                    const elementExists = seasons.includes(parseInt(season_namber[0].trim()))
+                    if (!elementExists) seasons.push(parseInt(season_namber[0].trim()))
+                }
             })
             console.log('Scraping anime:', title + ' - seasons:', seasons);
         })
