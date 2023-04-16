@@ -14,7 +14,7 @@ const path = require("path");
 
 app.use(cors(
     {
-        origin: 'localhost:4200',
+        origin: 'http://localhost:4200',
         methods: ['GET','POST','DELETE','UPDATE','PUT','PATCH']
     }
 ));
