@@ -35,9 +35,9 @@ router.post('/scraping/new_scraping',[auth_apikey], async (req, res) => {
 })
 
 router.get('/scraping/configured',[auth_apikey], async (req, res) => {
-    const response = await query(queryUtils.configured_anime_scraping)
-
-    res.send(utils.query_respose_to_json(response))
+    const {currentPage, itemsPerPage} = req.query
+    var resp = await utils.paginated_query(queryUtils.configured_anime_scraping,null,itemsPerPage, currentPage)
+    res.send(resp)
 })
 
 const task = cron.schedule(`*/${WEB_SCRAPING_TIME_STACK} * * * *`, async () => {

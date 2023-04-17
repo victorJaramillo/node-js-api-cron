@@ -3,7 +3,7 @@ const { response } = require('express');
 
 const bcrypt = require("bcrypt");
 
-const mysqlConnection = require('../database.js');
+const { paginate} = require('../database.js');
 
 var getNewPublicIp = async function () {
     await axios.get('https://ifconfig.me')
@@ -296,6 +296,22 @@ const query_respose_to_json = (query_response) => {
     return JSON.parse(JSON.stringify(query_response))
 }
 
+const paginated_query = async(query, params, limit, page) => {
+    if(!limit){
+        limit = 10;
+    }
+    if(!page){
+        page = 1;
+    }
+    return await paginate(query, 
+        {
+          page : page,
+          limit: limit,
+          params: params 
+        }
+    );
+  }
+
 
 module.exports = {
     getNewPublicIp,
@@ -330,5 +346,6 @@ module.exports = {
     decode_base64,
     validate_bcript,
     query_respose_to_json,
-    sendNewAnimeNotification
+    sendNewAnimeNotification,
+    paginated_query
 };
