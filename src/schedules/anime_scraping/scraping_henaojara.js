@@ -35,8 +35,12 @@ router.post('/scraping/new_scraping',[auth_apikey], async (req, res) => {
 })
 
 router.get('/scraping/configured',[auth_apikey], async (req, res) => {
-    const {currentPage, itemsPerPage} = req.query
-    var resp = await utils.paginated_query(queryUtils.configured_anime_scraping,null,itemsPerPage, currentPage)
+    const {currentPage, itemsPerPage, animeName} = req.query
+    var query = queryUtils.configured_anime_scraping
+    if(animeName){
+        query = query+` AND a.title LIKE '${animeName}'`
+    }
+    var resp = await utils.paginated_query(query,null,itemsPerPage, currentPage)
     res.send(resp)
 })
 
