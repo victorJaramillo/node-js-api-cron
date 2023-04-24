@@ -188,7 +188,10 @@ const get_enabled_anime_by_url = (value) => {
     return `${select_anime_scraping} WHERE a.url LIKE '${value}'`
 }
 
-const configured_anime_scraping =  `SELECT as2.season, a.title, as2.chapter_name, as2.chapter_image,as2.chapter_link, as2.clicked 
+const configured_anime_scraping =  `SELECT as2.season, a.title, as2.chapter_name, as2.chapter_image,as2.chapter_link, 
+                                    CASE as2.clicked 
+                                    WHEN '1' THEN true 
+                                    ELSE false END AS clicked
                                     FROM web_scraping.anime a 
                                     JOIN web_scraping.anime_scraping as2 
                                     ON as2.anime_id = a.id WHERE a.enable = TRUE`;
