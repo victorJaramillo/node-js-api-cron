@@ -13,39 +13,39 @@ const IS_PRODUCTION = JSON.parse(process.env.IS_PRODUCTION);
 const request = require('request-promise');
 const cheerio = require('cheerio');
 
-router.get('/scraping',[auth_apikey], async (req, res) => {
+router.get('/scraping', [auth_apikey], async (req, res) => {
     task.start();
     const respo = await get_enabled_anime_to_scraping()
     const response = await for_enabled_anime(respo)
     res.send(response)
 })
-router.post('/scraping/new_scraping',[auth_apikey], async (req, res) => {
-    const {title, url} = req.body
+router.post('/scraping/new_scraping', [auth_apikey], async (req, res) => {
+    const { title, url } = req.body
     try {
         var find_configured_anime = await query(queryUtils.get_enabled_anime_by_url(url))
         find_configured_anime = utils.query_respose_to_json(find_configured_anime)
-        if(!find_configured_anime[0]){
-            const object_to_save = {title:`${title}`, url:`${url}`, enable: true}
+        if (!find_configured_anime[0]) {
+            const object_to_save = { title: `${title}`, url: `${url}`, enable: true }
             await query(queryUtils.insert_enabled_anime(), object_to_save)
-            res.status(201).send({message:`new scraping configured`, title:`${title}`, url:`${url}`})
-        }else res.status(400).send({message:`this anime is already configured`})
+            res.status(201).send({ message: `new scraping configured`, title: `${title}`, url: `${url}` })
+        } else res.status(400).send({ message: `this anime is already configured` })
     } catch (error) {
         res.status(400).send(error)
     }
 })
 
-router.get('/scraping/configured',[auth_apikey], async (req, res) => {
-    const {currentPage, itemsPerPage, animeName} = req.query
+router.get('/scraping/configured', [auth_apikey], async (req, res) => {
+    const { currentPage, itemsPerPage, animeName } = req.query
     var query = queryUtils.configured_anime_scraping
-    if(animeName){
-        query = query+` AND a.title LIKE '${animeName}'`
+    if (animeName) {
+        query = query + ` AND a.title LIKE '${animeName}'`
     }
-    var resp = await utils.paginated_query(query,null,itemsPerPage, currentPage)
+    var resp = await utils.paginated_query(query, null, itemsPerPage, currentPage)
     res.send(resp)
 })
 
 const task = cron.schedule(`*/${WEB_SCRAPING_TIME_STACK} * * * *`, async () => {
-    if(IS_PRODUCTION){
+    if (IS_PRODUCTION) {
         const respo = await get_enabled_anime_to_scraping()
         await for_enabled_anime(respo)
         console.log(`NEW ANIME Web Scraping excecution date ${today.toISOString()}`);
@@ -72,8 +72,8 @@ const scraping_series = async (url) => {
                 const cap_link = $(chapter).find('.episodiotitle a').attr('href')
                 var season_namber = $(cap_num).text().toString()
                 try {
-                    if(season_namber != ''){
-    
+                    if (season_namber != '') {
+
                         season_namber = season_namber.split('-')
                         respArray.push(
                             {
@@ -118,7 +118,7 @@ const for_enabled_anime = async (array) => {
         const response = await scraping_series(url)
         var enable_anime_field = await query(queryUtils.get_enabled_anime_field(id))
         enable_anime_field = utils.query_respose_to_json(enable_anime_field)
-        
+
         if (enable_anime_field.length === 0) {
             response.map(sc => {
                 const object_to_save = buildObjectToSave(id, sc)
@@ -170,5 +170,22 @@ function buildObjectToSave(id, sc) {
         chapter_link: sc.chapter_link
     };
 }
+
+router.put('/scraping/clicked-anime', [auth_apikey], async (req, res) => {
+    const body = req.body
+    if (!Object.keys(body).length) {
+        res.status(400).send({ message: "body is required" })
+    } else if (!body.url) {
+        res.status(400).send({ message: "the body is incomplete. parameters are required" })
+    }
+    else {
+        const { url } = body
+        const objectToUpdate = { clicked: true }
+        var response = await query(queryUtils.update_clicked_url(url), objectToUpdate)
+        response = utils.query_respose_to_json(response)
+
+        res.status(200).send(response)
+    }
+})
 
 module.exports = router

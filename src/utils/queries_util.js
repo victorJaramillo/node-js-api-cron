@@ -191,7 +191,11 @@ const get_enabled_anime_by_url = (value) => {
 const configured_anime_scraping =  `SELECT as2.season, a.title, as2.chapter_name, as2.chapter_image,as2.chapter_link 
                                     FROM web_scraping.anime a 
                                     JOIN web_scraping.anime_scraping as2 
-                                    ON as2.anime_id = a.id WHERE a.enable = TRUE`; 
+                                    ON as2.anime_id = a.id WHERE a.enable = TRUE`;
+                                    
+const update_clicked_url = (url) => {
+    return `UPDATE web_scraping.anime_scraping SET ? WHERE chapter_link LIKE '${url}'`
+}                                    
 
 module.exports = {
     get_currconv_configs,
@@ -249,5 +253,6 @@ module.exports = {
     insert_enabled_anime_field,
     insert_enabled_anime,
     get_enabled_anime_by_url,
-    configured_anime_scraping
+    configured_anime_scraping,
+    update_clicked_url
 }
