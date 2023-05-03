@@ -189,9 +189,15 @@ router.put('/scraping/clicked-anime', [auth_apikey], async (req, res) => {
         const objectToUpdate = { clicked: true }
         var response = await query(queryUtils.update_clicked_url(url), objectToUpdate)
         response = utils.query_respose_to_json(response)
-
+        
         res.status(200).send(response)
     }
+})
+router.get('/configured', [auth_apikey], async (req, res) => {
+    var query = queryUtils.get_animes_configured;
+    var resp = await utils.paginated_query(query)
+
+    res.send(resp)
 })
 
 module.exports = router

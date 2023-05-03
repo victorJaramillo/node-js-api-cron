@@ -198,7 +198,9 @@ const configured_anime_scraping =  `SELECT as2.season, a.title, as2.chapter_name
                                     
 const update_clicked_url = (url) => {
     return `UPDATE web_scraping.anime_scraping SET ? WHERE chapter_link LIKE '${url}'`
-}                                    
+}
+
+const get_animes_configured = 'SELECT * FROM web_scraping.anime a'
 
 module.exports = {
     get_currconv_configs,
@@ -257,5 +259,6 @@ module.exports = {
     insert_enabled_anime,
     get_enabled_anime_by_url,
     configured_anime_scraping,
-    update_clicked_url
+    update_clicked_url,
+    get_animes_configured
 }
