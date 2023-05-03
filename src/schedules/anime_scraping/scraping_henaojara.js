@@ -193,11 +193,30 @@ router.put('/scraping/clicked-anime', [auth_apikey], async (req, res) => {
         res.status(200).send(response)
     }
 })
+
 router.get('/configured', [auth_apikey], async (req, res) => {
     var query = queryUtils.get_animes_configured;
     var resp = await utils.paginated_query(query)
-
+    
     res.send(resp)
+})
+router.put('/configured/:id', [auth_apikey], async (req, res) => {
+    const {id} = req.params
+    const {enable} = req.body
+    if(enable == undefined){
+        message = {error:400, message: "body params is required"}
+        res.status(400).send(message)
+    }else {
+        const update_query = queryUtils.activate_desactivate_anime(id)
+        const body = {enable: enable}
+        response = await query(update_query, body)
+        response = utils.query_respose_to_json(response)
+        if(response.affectedRows == 1){
+            res.status(200).send({status:"ok", message: "successfully updated"})
+        }else {
+            res.status(304).send(response)
+        }
+    }
 })
 
 module.exports = router

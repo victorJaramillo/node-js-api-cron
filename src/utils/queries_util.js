@@ -202,6 +202,10 @@ const update_clicked_url = (url) => {
 
 const get_animes_configured = 'SELECT * FROM web_scraping.anime a'
 
+const activate_desactivate_anime = (id) => {
+    return `UPDATE web_scraping.anime SET ? WHERE id = ${id}`
+}
+
 module.exports = {
     get_currconv_configs,
     get_available_configs,
@@ -260,5 +264,6 @@ module.exports = {
     get_enabled_anime_by_url,
     configured_anime_scraping,
     update_clicked_url,
-    get_animes_configured
+    get_animes_configured,
+    activate_desactivate_anime
 }
