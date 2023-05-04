@@ -196,7 +196,8 @@ router.put('/scraping/clicked-anime', [auth_apikey], async (req, res) => {
 
 router.get('/configured', [auth_apikey], async (req, res) => {
     var query = queryUtils.get_animes_configured;
-    var resp = await utils.paginated_query(query)
+    const {currentPage, itemsPerPage} = req.query
+    var resp = await utils.paginated_query(query, null, itemsPerPage, currentPage)
     
     res.send(resp)
 })
