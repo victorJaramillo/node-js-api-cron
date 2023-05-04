@@ -78,9 +78,10 @@ const paginate = (query, options)  => {
         if(err){
           return reject(err);
         } 
-        var total = rows2.length;
+        var total = undefined == rows2[0].total ? rows2.length : rows2[0].total;
         var items = rows.length;
-        var pages = ( (0 == (total/items % 1)) ? Math.round(total/items) : Math.round(total/items)+1)
+        // var pages = ( (0 == (total/items % 1)) ? Math.round(total/items) : Math.round(total/items)+1)
+        var pages = Math.round(total/items)
         var json = { 
           currentPage: Number.parseInt(pageNumber),
           totalPages: pages,
