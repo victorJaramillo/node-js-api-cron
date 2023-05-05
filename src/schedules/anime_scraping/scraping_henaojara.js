@@ -38,13 +38,13 @@ router.get('/scraping/configured', [auth_apikey], async (req, res) => {
     const { currentPage, itemsPerPage, animeName, clicked, season } = req.query
     var query = queryUtils.configured_anime_scraping
     if (animeName) {
-        query = query + ` AND a.title LIKE '${animeName}'`
+        query =  `${query} AND a.title LIKE '${animeName}'`
     }
     if(clicked) {
-        query = query+ ` AND as2.clicked = ${clicked}`
+        query = `${query} AND as2.clicked = ${clicked}`
     }
     if(season){
-        query = query+` AND as2.season = ${season}`
+        query = `${query} AND as2.season = ${season}`
     }
     var resp = await utils.paginated_query(query, null, itemsPerPage, currentPage)
     res.send(resp)
@@ -196,7 +196,10 @@ router.put('/scraping/clicked-anime', [auth_apikey], async (req, res) => {
 
 router.get('/configured', [auth_apikey], async (req, res) => {
     var query = queryUtils.get_animes_configured;
-    const {currentPage, itemsPerPage} = req.query
+    const {currentPage, itemsPerPage, title} = req.query
+    if(title) {
+        query = `${query} WHERE a.title LIKE '%${title}%'`
+    }
     var resp = await utils.paginated_query(query, null, itemsPerPage, currentPage)
     
     res.send(resp)
