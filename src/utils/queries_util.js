@@ -152,6 +152,14 @@ const get_api_key_by_value = (value) => {
     return `SELECT decoded_key_value FROM server_config.apikeys a WHERE a.key_value LIKE '${value}'`
 }
 
+const get_api_key_enable_endpoint = (endpoint, method, apikey) => {
+    return `SELECT (COUNT(*)) AS enable FROM 
+    server_config.apikeys_endpoint_enables a 
+    JOIN server_config.apikeys a2 ON a.api_id = a2.id 
+    WHERE a.endpont = '${endpoint}' AND a.method = '${method}'
+    AND a2.key_value = '${apikey}'`
+}
+
 const create_api_key = () => {
     return `INSERT INTO server_config.apikeys SET ?`
 }
@@ -265,5 +273,6 @@ module.exports = {
     configured_anime_scraping,
     update_clicked_url,
     get_animes_configured,
-    activate_desactivate_anime
+    activate_desactivate_anime,
+    get_api_key_enable_endpoint
 }
