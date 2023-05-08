@@ -17,7 +17,7 @@ const ERROR_MESSAGES = Object.freeze(
 module.exports = async (req, res, next) => {
     const apikey = req.header("apikey")
     const {baseUrl, method} = req
-    if(!JSON.parse(IS_PRODUCTION)){
+    if(JSON.parse(IS_PRODUCTION)){
         if (!apikey) return res.status(401).send({
             error: "unauthorized"
         });
