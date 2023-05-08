@@ -163,6 +163,9 @@ const get_api_key_enable_endpoint = (endpoint, method, apikey) => {
 const create_api_key = () => {
     return `INSERT INTO server_config.apikeys SET ?`
 }
+const get_api_keys = () => {
+    return `SELECT * FROM server_config.apikeys a`
+}
 
 const get_user_info_by_user_api_id = (userId) => {
     return `SELECT x.* FROM edipartstore.usuario x WHERE x.api_user_id = ${userId}`
@@ -274,5 +277,6 @@ module.exports = {
     update_clicked_url,
     get_animes_configured,
     activate_desactivate_anime,
-    get_api_key_enable_endpoint
+    get_api_key_enable_endpoint,
+    get_api_keys
 }
