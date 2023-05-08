@@ -23,7 +23,7 @@ router.post('/generate', [authApikey], async (req, res) => {
     
     res.status(201).send({ 'generated_apikey': encoded })
 })
-router.get('/', [authApikey], async (req, res) => {
+router.get('/generate', [authApikey], async (req, res) => {
     const {currentPage, itemsPerPage} = req.query
     var response = await utils.paginated_query(query_utils.get_api_keys(), null, itemsPerPage, currentPage)
     res.send(utils.query_respose_to_json(response))
