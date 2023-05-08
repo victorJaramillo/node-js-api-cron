@@ -16,8 +16,8 @@ const ERROR_MESSAGES = Object.freeze(
 
 module.exports = async (req, res, next) => {
     const apikey = req.header("apikey")
-    const {baseUrl, method} = req
-    if(JSON.parse(IS_PRODUCTION)){
+    const {baseUrl, method, url} = req
+    if(!JSON.parse(IS_PRODUCTION)){
         if (!apikey) return res.status(401).send({
             error: "unauthorized"
         });
@@ -30,13 +30,15 @@ module.exports = async (req, res, next) => {
             valid = await utils.validate_bcript(decoded, utils.decode_base64(apikey))
             if(!valid) {return unauthorizedResponse(ERROR_MESSAGES.invalid_apikey)}
             else {
-                var isEnable = await query(query_utils.get_api_key_enable_endpoint(baseUrl, method, apikey))
+                const endpoint = baseUrl+url.split('?')[0]
+                var isEnable = await query(query_utils.get_api_key_enable_endpoint(endpoint, method, apikey))
                 isEnable = utils.query_respose_to_json(isEnable)[0].enable ? true : false
                 if(!isEnable){
                     return unauthorizedResponse(ERROR_MESSAGES.not_enabled)
                 }
             }
         } catch (error) {
+            console.error(error);
             return unauthorizedResponse(ERROR_MESSAGES.invalid_apikey)
         }
     }
