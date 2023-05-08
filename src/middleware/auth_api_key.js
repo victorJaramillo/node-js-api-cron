@@ -48,7 +48,7 @@ module.exports = async (req, res, next) => {
     function unauthorizedResponse(message) {
         return res.status(401).send({
             ok: false,
-            error: message
+            message: message
         });
     }
 }
