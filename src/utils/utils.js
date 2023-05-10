@@ -296,7 +296,7 @@ const query_respose_to_json = (query_response) => {
     return JSON.parse(JSON.stringify(query_response))
 }
 
-const paginated_query = async(query, params, limit, page) => {
+const paginated_query = async(query, where, limit, page) => {
     if(!limit){
         limit = 10;
     }
@@ -307,9 +307,13 @@ const paginated_query = async(query, params, limit, page) => {
         {
           page : page,
           limit: limit,
-          params: params 
+          where: where ? buildQueryString(where) : null 
         }
     );
+  }
+
+  const buildQueryString = (queryParams) => {
+    return Object.keys(queryParams).map(key => `${key}=${queryParams[key]}`).join(' AND ');
   }
 
 

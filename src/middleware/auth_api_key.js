@@ -12,7 +12,7 @@ const ERROR_MESSAGES = Object.freeze(
         invalid_apikey: 'ApiKey is not valid', 
         not_enabled: "the resource is not enabled, please contact the administrator"
     }
-    )
+)
 
     
 

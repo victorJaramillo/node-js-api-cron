@@ -1,3 +1,14 @@
+const SCHEMAS = Object.freeze(
+    {
+        dashboard: process.env.DASHBOARD_DB
+    }
+)
+const BDs = Object.freeze(
+    {
+        chores: process.env.CHORES_TODO
+    }
+)
+
 const get_currconv_configs = 'SELECT tab1.server, tab1.api_key, tab2.endpoint  FROM server_config.free_apis_integrations AS tab1, server_config.free_apis_integrations_endpoint AS tab2 WHERE tab2.id = 2';
 const get_available_configs = 'SELECT tab1.server, tab1.api_key, tab2.endpoint  FROM server_config.free_apis_integrations AS tab1, server_config.free_apis_integrations_endpoint AS tab2 WHERE tab2.id = 3';
 
@@ -217,6 +228,9 @@ const activate_desactivate_anime = (id) => {
     return `UPDATE web_scraping.anime SET ? WHERE id = ${id}`
 }
 
+const get_chores_to_do = `SELECT ctd.task_id, ctd.task_name, ctd.created, ctd.status FROM ${SCHEMAS.dashboard}.${BDs.chores} ctd`
+const save_chores_to_do = `INSERT INTO ${SCHEMAS.dashboard}.${BDs.chores} SET ?`
+
 module.exports = {
     get_currconv_configs,
     get_available_configs,
@@ -278,5 +292,7 @@ module.exports = {
     get_animes_configured,
     activate_desactivate_anime,
     get_api_key_enable_endpoint,
-    get_api_keys
+    get_api_keys,
+    get_chores_to_do,
+    save_chores_to_do
 }
