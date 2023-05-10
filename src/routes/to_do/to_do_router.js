@@ -5,14 +5,14 @@ const utils = require('../../utils/utils.js');
 const auth_apikey = require('../../middleware/auth_api_key')
 const { query } = require('../../database.js');
 
-router.get('', [auth_apikey], async(req, res) => {
+router.get('/list', [auth_apikey], async(req, res) => {
     const { currentPage, itemsPerPage, status, task_name } = req.query
     var params = status ? {status: `${status}`}: null
 
     var response = await utils.paginated_query(queryUtils.get_chores_to_do, params, itemsPerPage, currentPage)
     res.send(response)
 })
-router.post('', [auth_apikey], async(req, res) => {
+router.post('/create', [auth_apikey], async(req, res) => {
     const {task_name} = req.body
     const bodyTosave = {task_name:`${task_name}`, task_id: `${utils.UUID()}`}
     try {
@@ -24,7 +24,7 @@ router.post('', [auth_apikey], async(req, res) => {
         res.status(400).send(error)
     }
 })
-router.put('', [auth_apikey], async(req, res) => {
+router.put('/update', [auth_apikey], async(req, res) => {
 
 })
 
