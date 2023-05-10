@@ -296,7 +296,7 @@ const query_respose_to_json = (query_response) => {
     return JSON.parse(JSON.stringify(query_response))
 }
 
-const paginated_query = async(query, where, limit, page) => {
+const paginated_query = async(query, limit, page) => {
     if(!limit){
         limit = 10;
     }
@@ -306,8 +306,7 @@ const paginated_query = async(query, where, limit, page) => {
     return await paginate(query, 
         {
           page : page,
-          limit: limit,
-          where: where ? buildQueryString(where) : null 
+          limit: limit
         }
     );
   }

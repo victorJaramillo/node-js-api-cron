@@ -1,6 +1,8 @@
 const SCHEMAS = Object.freeze(
     {
-        dashboard: process.env.DASHBOARD_DB
+        dashboard: process.env.DASHBOARD_DB,
+        scraping: process.env.SCRAPING_DB,
+        server_config: process.env.SERVER_CONFIG_DB,
     }
 )
 const BDs = Object.freeze(
@@ -90,22 +92,22 @@ const update_public_url = (file_name) => {
     return `UPDATE edipartstore.producto_imagen SET ? WHERE file_name = '${file_name}'`
 }
 
-const save_scraper_movies = 'INSERT INTO web_scraping.cuevana SET ?';
+const save_scraper_movies = `INSERT INTO ${SCHEMAS.scraping}.cuevana SET ?`;
 
-const save_scraper_serie_cuevana = 'INSERT INTO web_scraping.series_cuevana SET ?';
+const save_scraper_serie_cuevana = `INSERT INTO ${SCHEMAS.scraping}.series_cuevana SET ?`;
 
-const save_scraper_pelis_panda = 'INSERT INTO web_scraping.pelis_panda SET ?';
+const save_scraper_pelis_panda = `INSERT INTO ${SCHEMAS.scraping}.pelis_panda SET ?`;
 
 const select_scraper_movies = (title, year) => {
-    return `SELECT * FROM web_scraping.cuevana AS c WHERE c.title LIKE '${title}' AND c.date = '${year}'`
+    return `SELECT * FROM ${SCHEMAS.scraping}.cuevana AS c WHERE c.title LIKE '${title}' AND c.date = '${year}'`
 };
 
 const select_scraper_serie_cuevana = (title, chapter) => {
-    return `SELECT * FROM web_scraping.series_cuevana AS c WHERE c.title LIKE '${title}' AND c.chapter = '${chapter}'`
+    return `SELECT * FROM ${SCHEMAS.scraping}.series_cuevana AS c WHERE c.title LIKE '${title}' AND c.chapter = '${chapter}'`
 };
 
 const select_scraper_pelis_panda = (title, url) => {
-    return `SELECT * FROM web_scraping.pelis_panda AS c WHERE c.title LIKE '${title}' AND c.url = '${url}'`
+    return `SELECT * FROM ${SCHEMAS.scraping}.pelis_panda AS c WHERE c.title LIKE '${title}' AND c.url = '${url}'`
 }
 
 const select_series = 'SELECT * FROM torrents.series s';
@@ -128,7 +130,7 @@ const save_new_serie = 'INSERT INTO torrents.series SET ?';
 const save_new_serie_url = 'INSERT INTO torrents.series_url SET ?';
 
 const select_chapters_la_periferia = (name) => {
-    return `SELECT * FROM web_scraping.la_periferia l WHERE l.url LIKE '${name}'`
+    return `SELECT * FROM ${SCHEMAS.scraping}.la_periferia l WHERE l.url LIKE '${name}'`
 }
 
 const save_new_chapter_la_periferia = 'INSERT INTO web_scraping.la_periferia SET ?'
@@ -144,10 +146,10 @@ const get_enabled_services_by_name  = (name) => {
 }
 
 const delete_enabled_services_by_ids  = () => {
-    return `DELETE FROM server_config.enabled_services WHERE ?`
+    return `DELETE FROM ${SCHEMAS.server_config}.enabled_services WHERE ?`
 }
 
-const save_new_enabled_service = 'INSERT INTO server_config.enabled_services SET ?' 
+const save_new_enabled_service = `INSERT INTO ${SCHEMAS.server_config}.enabled_services SET ?` 
 
 const save_new_chilean_info = 'INSERT INTO chilean_info.rut_info SET ?';
 const get_chilean_info = 'SELECT * FROM chilean_info.rut_info'
@@ -160,22 +162,22 @@ const get_chilean_info_by_name_and_lastname = (name, lastname) => {
 }
 
 const get_api_key_by_value = (value) => {
-    return `SELECT decoded_key_value FROM server_config.apikeys a WHERE a.key_value LIKE '${value}'`
+    return `SELECT decoded_key_value FROM ${SCHEMAS.server_config}.apikeys a WHERE a.key_value LIKE '${value}'`
 }
 
 const get_api_key_enable_endpoint = (endpoint, method, apikey) => {
     return `SELECT (COUNT(*)) AS enable FROM 
-    server_config.apikeys_endpoint_enables a 
-    JOIN server_config.apikeys a2 ON a.api_id = a2.id 
+    ${SCHEMAS.server_config}.apikeys_endpoint_enables a 
+    JOIN ${SCHEMAS.server_config}.apikeys a2 ON a.api_id = a2.id 
     WHERE a.endpont = '${endpoint}' AND a.method = '${method}'
     AND a2.key_value = '${apikey}'`
 }
 
 const create_api_key = () => {
-    return `INSERT INTO server_config.apikeys SET ?`
+    return `INSERT INTO ${SCHEMAS.server_config}.apikeys SET ?`
 }
 const get_api_keys = () => {
-    return `SELECT * FROM server_config.apikeys a`
+    return `SELECT * FROM ${SCHEMAS.server_config}.apikeys a`
 }
 
 const get_user_info_by_user_api_id = (userId) => {
@@ -190,20 +192,20 @@ const delete_serie_or_movie_name = (id) => {
     return `DELETE FROM torrents.series WHERE id = ${id}`
 }
 
-const select_anime_scraping = `SELECT * FROM web_scraping.anime a`
+const select_anime_scraping = `SELECT * FROM ${SCHEMAS.scraping}.anime a`
 
 const enable_anime_scraping =  `${select_anime_scraping} WHERE a.enable = TRUE`;
 
 const get_enabled_anime_field = (anime_id) => {
-    return `SELECT * FROM web_scraping.anime_scraping as2 WHERE as2.anime_id = ${anime_id}`
+    return `SELECT * FROM ${SCHEMAS.scraping}.anime_scraping as2 WHERE as2.anime_id = ${anime_id}`
 }
 
 const insert_enabled_anime_field = () => {
-    return `INSERT INTO web_scraping.anime_scraping SET ?`
+    return `INSERT INTO ${SCHEMAS.scraping}.anime_scraping SET ?`
 }
 
 const insert_enabled_anime = () => {
-    return `INSERT INTO web_scraping.anime SET ?`
+    return `INSERT INTO ${SCHEMAS.scraping}.anime SET ?`
 }
 
 const get_enabled_anime_by_url = (value) => {
@@ -214,12 +216,12 @@ const configured_anime_scraping =  `SELECT as2.season, a.title, as2.chapter_name
                                     CASE as2.clicked 
                                     WHEN '1' THEN true 
                                     ELSE false END AS clicked
-                                    FROM web_scraping.anime a 
-                                    JOIN web_scraping.anime_scraping as2 
+                                    FROM ${SCHEMAS.scraping}.anime a 
+                                    JOIN ${SCHEMAS.scraping}.anime_scraping as2 
                                     ON as2.anime_id = a.id WHERE a.enable = TRUE`;
                                     
 const update_clicked_url = (url) => {
-    return `UPDATE web_scraping.anime_scraping SET ? WHERE chapter_link LIKE '${url}'`
+    return `UPDATE ${SCHEMAS.scraping}.anime_scraping SET ? WHERE chapter_link LIKE '${url}'`
 }
 
 const get_animes_configured = 'SELECT * FROM web_scraping.anime a'
@@ -228,7 +230,13 @@ const activate_desactivate_anime = (id) => {
     return `UPDATE web_scraping.anime SET ? WHERE id = ${id}`
 }
 
-const get_chores_to_do = `SELECT ctd.task_id, ctd.task_name, ctd.created, ctd.status FROM ${SCHEMAS.dashboard}.${BDs.chores} ctd`
+const get_chores_to_do = `SELECT 
+                            ctd.task_id, 
+                            ctd.task_name, 
+                            ctd.created, CASE ctd.status
+                            WHEN '1' THEN true 
+                            ELSE false END AS status FROM ${SCHEMAS.dashboard}.${BDs.chores} ctd`
+
 const save_chores_to_do = `INSERT INTO ${SCHEMAS.dashboard}.${BDs.chores} SET ?`
 
 module.exports = {

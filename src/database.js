@@ -52,7 +52,6 @@ const paginate = (query, options)  => {
   var skipFrom, sortBy, columns;
   columns = options.columns || null;
   sortBy = options.sortBy || null;
-  where = options.where || null;
   var pageNumber = 1;
   var resultsPerPage = 10;
   if(options.limit && !isNaN(options.limit)){
@@ -61,9 +60,7 @@ const paginate = (query, options)  => {
   if(options.page && !isNaN(options.page)){
     pageNumber = options.page;
   }
-  if(where){
-    query = `${query} WHERE ${where} `
-  }
+
   skipFrom = (pageNumber * resultsPerPage) - resultsPerPage;
   query = query + " LIMIT " + skipFrom + ", " + resultsPerPage;
   if (columns !== null) {
