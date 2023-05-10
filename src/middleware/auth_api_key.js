@@ -19,7 +19,7 @@ const ERROR_MESSAGES = Object.freeze(
 module.exports = async (req, res, next) => {
     const apikey = req.header("apikey")
     var {baseUrl, method, url} = req
-    if(!JSON.parse(IS_PRODUCTION)){
+    if(JSON.parse(IS_PRODUCTION)){
         if (!apikey) return res.status(401).send({
             error: "unauthorized"
         });
@@ -33,8 +33,8 @@ module.exports = async (req, res, next) => {
             if(!valid) {return unauthorizedResponse(ERROR_MESSAGES.invalid_apikey)}
             else {
                 if(method === 'PUT'){
-                    for(let item in req.params){
-                        url = url.replace(req.params[`${item}`], '')
+                    for(let param in req.params){
+                        url = url.replace(req.params[`${param}`], '')
                     }
                 }
                 var endpoint = baseUrl+url.split('?')[0]
