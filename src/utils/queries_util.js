@@ -238,6 +238,9 @@ const get_chores_to_do = `SELECT
                             ELSE false END AS status FROM ${SCHEMAS.dashboard}.${BDs.chores} ctd`
 
 const save_chores_to_do = `INSERT INTO ${SCHEMAS.dashboard}.${BDs.chores} SET ?`
+const update_chores_to_do = (id) => {
+    return `UPDATE ${SCHEMAS.dashboard}.${BDs.chores} SET ? WHERE task_id = '${id}'`
+}
 
 module.exports = {
     get_currconv_configs,
@@ -302,5 +305,6 @@ module.exports = {
     get_api_key_enable_endpoint,
     get_api_keys,
     get_chores_to_do,
-    save_chores_to_do
+    save_chores_to_do,
+    update_chores_to_do
 }
