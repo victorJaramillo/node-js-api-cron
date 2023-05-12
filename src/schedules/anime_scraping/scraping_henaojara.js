@@ -46,7 +46,7 @@ router.get('/scraping/configured', [auth_apikey], async (req, res) => {
     if(season){
         query = `${query} AND as2.season = ${season}`
     }
-    var resp = await utils.paginated_query(query, null, itemsPerPage, currentPage)
+    var resp = await utils.paginated_query(query, itemsPerPage, currentPage)
     res.send(resp)
 })
 
