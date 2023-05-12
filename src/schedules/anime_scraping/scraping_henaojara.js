@@ -200,7 +200,7 @@ router.get('/configured', [auth_apikey], async (req, res) => {
     if(title) {
         query = `${query} WHERE a.title LIKE '%${title}%'`
     }
-    var resp = await utils.paginated_query(query, null, itemsPerPage, currentPage)
+    var resp = await utils.paginated_query(query, itemsPerPage, currentPage)
     
     res.send(resp)
 })
