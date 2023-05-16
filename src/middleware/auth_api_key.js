@@ -1,7 +1,6 @@
 // Import dependencies
 const jwt = require("jsonwebtoken")
-const IS_PRODUCTION = process.env.IS_PRODUCTION
-const JWT_KEY = process.env.JWT_KEY
+const USE_API_KEY = process.env.USE_API_KEY
 
 const query_utils = require('../utils/queries_util');
 const utils = require('../utils/utils');
@@ -19,7 +18,7 @@ const ERROR_MESSAGES = Object.freeze(
 module.exports = async (req, res, next) => {
     const apikey = req.header("apikey")
     var {baseUrl, method, url} = req
-    if(JSON.parse(IS_PRODUCTION)){
+    if(JSON.parse(USE_API_KEY)){
         if (!apikey) return res.status(401).send({
             error: "unauthorized"
         });
