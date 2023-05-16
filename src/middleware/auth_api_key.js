@@ -32,7 +32,7 @@ module.exports = async (req, res, next) => {
             valid = await utils.validate_bcript(decoded, utils.decode_base64(apikey))
             if(!valid) {return unauthorizedResponse(ERROR_MESSAGES.invalid_apikey)}
             else {
-                if(method === 'PUT'){
+                if(method === 'PUT' || method === 'DELETE'){
                     for(let param in req.params){
                         url = url.replace(req.params[`${param}`], '')
                     }
