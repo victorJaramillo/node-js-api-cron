@@ -244,8 +244,17 @@ const update_chores_to_do = (id) => {
 
 const insert_dollar_values = `INSERT INTO currencies.dollar_values SET ?`
 const insert_uf_values = `INSERT INTO currencies.uf_values SET ?`
-const select_to_day_dollar_value = `SELECT dv.value AS valor, dv.name AS nombre FROM currencies.dollar_values dv WHERE DATE_FORMAT(dv.date , "%Y-%m-%d") = DATE_FORMAT(NOW() , "%Y-%m-%d")`
-const select_to_day_uf_value = `SELECT dv.value AS valor, dv.name AS nombre FROM currencies.uf_values dv WHERE DATE_FORMAT(dv.date , "%Y-%m-%d") = DATE_FORMAT(NOW() , "%Y-%m-%d")`
+const select_to_day_dollar_value = `SELECT dv.value AS valor, dv.name AS nombre, DATE_FORMAT(dv.date , "%Y-%m-%d") AS fecha FROM currencies.dollar_values dv WHERE DATE_FORMAT(dv.date , "%Y-%m-%d") = DATE_FORMAT(NOW() , "%Y-%m-%d")`
+const select_7_days_dollar_value = `SELECT 
+                                        dv.value AS valor, 
+                                        dv.name AS nombre,
+                                        DATE_FORMAT(dv.date , "%Y-%m-%d") AS fecha 
+                                    FROM 
+                                        currencies.dollar_values dv 
+                                    WHERE DATE_FORMAT(dv.date , "%Y-%m-%d") 
+                                    BETWEEN DATE_FORMAT((DATE_SUB(NOW(), INTERVAL 7 DAY)), "%Y-%m-%d") 
+                                    AND DATE_FORMAT(NOW() , "%Y-%m-%d")`
+const select_to_day_uf_value = `SELECT dv.value AS valor, dv.name AS nombre, DATE_FORMAT(dv.date , "%Y-%m-%d") AS fecha FROM currencies.uf_values dv WHERE DATE_FORMAT(dv.date , "%Y-%m-%d") = DATE_FORMAT(NOW() , "%Y-%m-%d")`
 
 module.exports = {
     get_currconv_configs,
@@ -315,5 +324,6 @@ module.exports = {
     insert_dollar_values,
     select_to_day_dollar_value,
     select_to_day_uf_value,
-    insert_uf_values
+    insert_uf_values,
+    select_7_days_dollar_value
 }

@@ -31,6 +31,12 @@ currencyRouter.get('/available/cl', async (req, res) => {
     }
     
 })
+
+currencyRouter.get('/available/dollar/chart', async (req, res) => {
+    const dollar_response = await query(queries_util.select_7_days_dollar_value)
+    res.send(dollar_response)
+})
+
 currencyRouter.post('/available/cl', async (req, res) => {
     const { unit, quantity } = req.body;
     if (!unit) {
