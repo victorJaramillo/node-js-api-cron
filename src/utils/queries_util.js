@@ -242,6 +242,11 @@ const update_chores_to_do = (id) => {
     return `UPDATE ${SCHEMAS.dashboard}.${BDs.chores} SET ? WHERE task_id = '${id}'`
 }
 
+const insert_dollar_values = `INSERT INTO currencies.dollar_values SET ?`
+const insert_uf_values = `INSERT INTO currencies.uf_values SET ?`
+const select_to_day_dollar_value = `SELECT dv.value AS valor, dv.name AS nombre FROM currencies.dollar_values dv WHERE DATE_FORMAT(dv.date , "%Y-%m-%d") = DATE_FORMAT(NOW() , "%Y-%m-%d")`
+const select_to_day_uf_value = `SELECT dv.value AS valor, dv.name AS nombre FROM currencies.uf_values dv WHERE DATE_FORMAT(dv.date , "%Y-%m-%d") = DATE_FORMAT(NOW() , "%Y-%m-%d")`
+
 module.exports = {
     get_currconv_configs,
     get_available_configs,
@@ -306,5 +311,9 @@ module.exports = {
     get_api_keys,
     get_chores_to_do,
     save_chores_to_do,
-    update_chores_to_do
+    update_chores_to_do,
+    insert_dollar_values,
+    select_to_day_dollar_value,
+    select_to_day_uf_value,
+    insert_uf_values
 }
