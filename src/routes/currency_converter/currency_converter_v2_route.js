@@ -17,19 +17,12 @@ const IS_PRODUCTION = JSON.parse(process.env.IS_PRODUCTION);
 currencyRouter.get('/available/cl', async (req, res) => {
     task.start()
     const dollar_response = await query(queries_util.select_to_day_dollar_value)
-    if(dollar_response.length >= 1) {
-        const uf_response = await query(queries_util.select_to_day_uf_value)
-        const data = utils.query_respose_to_json(dollar_response)[0]
-        const uf_data = utils.query_respose_to_json(uf_response)[0]
-        const responseBody = {uf: uf_data, dollar: data}
-        res.send(responseBody)
-    }else {
-        const response = await get_values()
-        const {data, status} = response
-        const responseBody = {uf: data.uf, dollar: data.dolar, available: data}
-        res.status(status).send(responseBody)
-    }
-    
+    const uf_response = await query(queries_util.select_to_day_uf_value)
+    const data = utils.query_respose_to_json(dollar_response)[0]
+    const uf_data = utils.query_respose_to_json(uf_response)[0]
+    const responseBody = { uf: uf_data, dollar: data }
+    res.send(responseBody)
+
 })
 
 currencyRouter.get('/available/dollar/chart', async (req, res) => {
@@ -50,8 +43,11 @@ currencyRouter.post('/available/cl', async (req, res) => {
 
 const task = cron.schedule(`*/${CURRENCY_VALUES_TIME_STACK} * * * *`, async () => {
     if (IS_PRODUCTION) {
-        await get_values()
-        console.log(`NEW CURRENCIES VALUES excecution date ${today.toISOString()}`);
+        const dollar_response = await query(queries_util.select_to_day_dollar_value)
+        if (dollar_response.length == 0) {
+            await get_values()
+            console.log(`NEW CURRENCIES VALUES excecution date ${today.toISOString()}`);
+        }
     }
 })
 
@@ -60,12 +56,12 @@ const get_values = async () => {
     const values_dollar = {
         // code: response.data.dolar.codigo, 
         name: response.data.dolar.nombre,
-        value: response.data.dolar.valor 
+        value: response.data.dolar.valor
     }
     const values_uf = {
         // code: response.data.dolar.codigo, 
         name: response.data.uf.nombre,
-        value: response.data.uf.valor 
+        value: response.data.uf.valor
     }
     await query(queries_util.insert_dollar_values, values_dollar)
     await query(queries_util.insert_uf_values, values_uf)
