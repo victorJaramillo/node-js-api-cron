@@ -252,8 +252,8 @@ const select_7_days_dollar_value = `SELECT
                                     FROM 
                                         currencies.dollar_values dv 
                                     WHERE DATE_FORMAT(dv.date , "%Y-%m-%d") 
-                                    BETWEEN DATE_FORMAT((DATE_SUB(NOW(), INTERVAL 7 DAY)), "%Y-%m-%d") 
-                                    AND DATE_FORMAT(NOW() , "%Y-%m-%d")`
+                                    BETWEEN DATE_FORMAT((DATE_SUB(NOW(), INTERVAL 6 DAY)), "%Y-%m-%d") 
+                                    AND DATE_FORMAT(NOW() , "%Y-%m-%d") ORDER BY dv.date ASC`
 const select_to_day_uf_value = `SELECT dv.value AS valor, dv.name AS nombre, DATE_FORMAT(dv.date , "%Y-%m-%d") AS fecha FROM currencies.uf_values dv WHERE DATE_FORMAT(dv.date , "%Y-%m-%d") = DATE_FORMAT(NOW() , "%Y-%m-%d")`
 
 module.exports = {
