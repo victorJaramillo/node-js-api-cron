@@ -29,6 +29,11 @@ currencyRouter.get('/available/dollar/chart', async (req, res) => {
     const dollar_response = await query(queries_util.select_7_days_dollar_value)
     res.send(dollar_response)
 })
+currencyRouter.get('/available/dollar/chart/last/month', async (req, res) => {
+    const dollar_response = await query(queries_util.select_30_days_dollar_value)
+    res.send(dollar_response)
+    
+})
 currencyRouter.get('/available/uf/chart', async (req, res) => {
     const dollar_response = await query(queries_util.select_7_days_uf_value)
     res.send(dollar_response)
