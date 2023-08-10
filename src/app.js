@@ -14,7 +14,7 @@ const path = require("path");
 
 app.use(cors(
     {
-        origin: ['http://localhost:4200', 'http://localhost:31371', 'https://manager.vjdev.xyz'],
+        origin: ['http://localhost:4200', 'http://front.victor.xyz:31371', 'https://manager.vjdev.xyz'],
         methods: ['GET','POST','DELETE','UPDATE','PUT','PATCH']
     }
 ));
