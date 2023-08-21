@@ -9,7 +9,7 @@ router.get('/tasks', [auth_apikey], async (req, res) => {
     const { currentPage, itemsPerPage, status } = req.query
 
     var query = queryUtils.get_chores_to_do
-    if (status) {
+    if (status && status != 2) {
         query = `${query} WHERE ctd.status= ${status} `
     }
 
