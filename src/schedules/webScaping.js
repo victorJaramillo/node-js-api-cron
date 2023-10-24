@@ -15,9 +15,9 @@ router.get('/scraping', async (req, res) => {
     task.start();
     await Promise.all(
         [
-            scraping_cuevana_movies(), 
-            scraping_pelis_panda(),
-            scraping_cuevana_la_periferia()
+            //scraping_cuevana_movies(), 
+            //scraping_pelis_panda(),
+            //scraping_cuevana_la_periferia()
         ]
     );
     res.send({ message: 'Ok' })
