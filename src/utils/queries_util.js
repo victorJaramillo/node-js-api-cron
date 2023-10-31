@@ -169,7 +169,7 @@ const get_api_key_enable_endpoint = (endpoint, method, apikey) => {
     return `SELECT (COUNT(*)) AS enable FROM 
     ${SCHEMAS.server_config}.apikeys_endpoint_enables a 
     JOIN ${SCHEMAS.server_config}.apikeys a2 ON a.api_id = a2.id 
-    WHERE a.endpont = '${endpoint}' AND a.method = '${method}'
+    WHERE a.endpont LIKE '%${endpoint}%' AND a.method = '${method}'
     AND a2.key_value = '${apikey}'`
 }
 

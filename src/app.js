@@ -42,6 +42,7 @@ const moviesAndSeriesRouter = require('./routes/movies_and_series');
 const enabledServicesRouter = require('./routes/server_services/enabled_services_route');
 const apiKeyGenerator = require('./routes/api_key/api_key_generator');
 const henaojara = require('./schedules/anime_scraping/scraping_henaojara')
+const movies_lmhd = require('./schedules/movies/scraping_lmhd')
 const todoRouter = require('./routes/to_do/to_do_router')
 const swaggerDocs = require('./swagger')
 
@@ -64,6 +65,7 @@ app.use("/api/v1/rut", chileanInfo);
 app.use("/api/v1/apikey", apiKeyGenerator);
 
 app.use('/api/v1/animeonline', henaojara)
+app.use('/api/v1/scraping/movies', movies_lmhd)
 app.use('/api/v1/to_do', todoRouter)
 
 if(IS_PRODUCTION){

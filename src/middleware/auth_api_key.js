@@ -37,6 +37,7 @@ module.exports = async (req, res, next) => {
                     }
                 }
                 var endpoint = baseUrl+url.split('?')[0]
+                endpoint = endpoint.slice(0, -1)
                 var isEnable = await query(query_utils.get_api_key_enable_endpoint(endpoint, method, apikey))
                 isEnable = utils.query_respose_to_json(isEnable)[0].enable ? true : false
                 if(!isEnable){
