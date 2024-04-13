@@ -223,4 +223,18 @@ router.put('/configured/:id', [auth_apikey], async (req, res) => {
     }
 })
 
+router.delete('/delete/:id', [auth_apikey], async (req, res) => {
+    const {id} = req.params
+    if(id == undefined){
+        message = {error:400, message: "body params is required"}
+        res.status(400).send(message)
+    }else {
+        const delete_anime = queryUtils.delete_anime(id)
+        response = await query(delete_anime)
+        if(response.affectedRows == 1){
+            res.status(200).send({status:"ok", message: "record deleted"})
+        }
+    }
+})
+
 module.exports = router

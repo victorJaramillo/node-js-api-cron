@@ -274,6 +274,10 @@ const select_7_days_uf_value = `SELECT
                                     AND DATE_FORMAT(NOW() , "%Y-%m-%d") ORDER BY dv.date ASC`
 const select_to_day_uf_value = `SELECT dv.value AS valor, dv.name AS nombre, DATE_FORMAT(dv.date , "%Y-%m-%d") AS fecha FROM currencies.uf_values dv WHERE DATE_FORMAT(dv.date , "%Y-%m-%d") = DATE_FORMAT(NOW() , "%Y-%m-%d")`
 
+const delete_anime = (id) => {
+    return `DELETE FROM web_scraping.anime WHERE id=${id}`
+} 
+
 module.exports = {
     get_currconv_configs,
     get_available_configs,
@@ -345,5 +349,6 @@ module.exports = {
     insert_uf_values,
     select_7_days_dollar_value,
     select_7_days_uf_value,
-    select_30_days_dollar_value
+    select_30_days_dollar_value,
+    delete_anime
 }
