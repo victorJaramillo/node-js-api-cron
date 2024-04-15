@@ -35,16 +35,12 @@ router.post('/scraping/new_scraping', [auth_apikey], async (req, res) => {
 })
 
 router.put('/scraping/modify/scraping/:id', [auth_apikey], async (req, res) => {
-    const {id} = req.params
+    const { id } = req.params
     const { title, url } = req.body
     try {
-        var find_configured_anime = await query(queryUtils.get_enabled_anime_by_url(url))
-        find_configured_anime = utils.query_respose_to_json(find_configured_anime)
-        if (!find_configured_anime[0]) {
-            const object_to_save = { title: `${title}`, url: `${url}`, enable: true }
-            await query(queryUtils.update_enabled_anime(id), object_to_save)
-            res.status(201).send({ message: `scraping modified`, title: `${title}`, url: `${url}` })
-        } else res.status(400).send({ message: `this anime is already configured` })
+        const object_to_save = { title: `${title}`, url: `${url}`, enable: true }
+        await query(queryUtils.update_enabled_anime(id), object_to_save)
+        res.status(201).send({ message: `scraping modified`, title: `${title}`, url: `${url}` })
     } catch (error) {
         res.status(400).send(error)
     }
@@ -54,12 +50,12 @@ router.get('/scraping/configured', [auth_apikey], async (req, res) => {
     const { currentPage, itemsPerPage, animeName, clicked, season } = req.query
     var query = queryUtils.configured_anime_scraping
     if (animeName) {
-        query =  `${query} AND a.title LIKE '${animeName}'`
+        query = `${query} AND a.title LIKE '${animeName}'`
     }
-    if(clicked) {
+    if (clicked) {
         query = `${query} AND as2.clicked = ${clicked}`
     }
-    if(season){
+    if (season) {
         query = `${query} AND as2.season = ${season}`
     }
     var resp = await utils.paginated_query(query, itemsPerPage, currentPage)
@@ -86,13 +82,13 @@ const scraping_series = async (url) => {
         $('.main-episodies').each((i, ele) => {
             const eps = $(ele).find('div.list-episodies-content')
             $(eps).find('li').each((indx, elenet) => {
-                
+
                 const chap_link = $(elenet).find('a').attr('href')
                 var chap_name = $(elenet).find('a').attr('title')
                 const chap_img = $('figure img').attr('src')
                 var chap_num = $(elenet).find('a').text().trim().split(" ")
                 chap_num = parseInt(chap_num[(chap_num.length - 1)])
-                
+
                 respArray.push(
                     {
                         chapter_name: chap_name,
@@ -125,35 +121,35 @@ const scraping_series = async (url) => {
         //         console.log('Scraping anime:', chap_name);
         //     })
 
-            // const episodes = $(serie).find('div.sbox')
-            // $(episodes).find('div.se-a .episodios li').each((index, chapter) => {
-            //     const cap_img = $(chapter).find('.imagen img.lazy').attr('data-src')
-            //     const cap_num = $(chapter).find('.numerando')
-            //     const cap_name = $(chapter).find('.episodiotitle a')
-            //     const cap_link = $(chapter).find('.episodiotitle a').attr('href')
-            //     var season_namber = $(cap_num).text().toString()
-            //     try {
-            //         if (season_namber != '') {
+        // const episodes = $(serie).find('div.sbox')
+        // $(episodes).find('div.se-a .episodios li').each((index, chapter) => {
+        //     const cap_img = $(chapter).find('.imagen img.lazy').attr('data-src')
+        //     const cap_num = $(chapter).find('.numerando')
+        //     const cap_name = $(chapter).find('.episodiotitle a')
+        //     const cap_link = $(chapter).find('.episodiotitle a').attr('href')
+        //     var season_namber = $(cap_num).text().toString()
+        //     try {
+        //         if (season_namber != '') {
 
-            //             season_namber = season_namber.split('-')
-            //             respArray.push(
-            //                 {
-            //                     title: title,
-            //                     season: parseInt(season_namber[0].trim()),
-            //                     chapter_name: $(cap_name).text(),
-            //                     chapter_number: parseInt(season_namber[1].trim()),
-            //                     chapter_image: cap_img,
-            //                     chapter_link: cap_link
-            //                 }
-            //             )
-            //             const elementExists = seasons.includes(parseInt(season_namber[0].trim()))
-            //             if (!elementExists) seasons.push(parseInt(season_namber[0].trim()))
-            //         }
-            //     } catch (error) {
-            //         console.error(error);
-            //         utils.sendTextSlackNotification(error)
-            //     }
-            // })
+        //             season_namber = season_namber.split('-')
+        //             respArray.push(
+        //                 {
+        //                     title: title,
+        //                     season: parseInt(season_namber[0].trim()),
+        //                     chapter_name: $(cap_name).text(),
+        //                     chapter_number: parseInt(season_namber[1].trim()),
+        //                     chapter_image: cap_img,
+        //                     chapter_link: cap_link
+        //                 }
+        //             )
+        //             const elementExists = seasons.includes(parseInt(season_namber[0].trim()))
+        //             if (!elementExists) seasons.push(parseInt(season_namber[0].trim()))
+        //         }
+        //     } catch (error) {
+        //         console.error(error);
+        //         utils.sendTextSlackNotification(error)
+        //     }
+        // })
         // })
         return respArray
     } catch (error) {
@@ -243,55 +239,55 @@ router.put('/scraping/clicked-anime', [auth_apikey], async (req, res) => {
         const objectToUpdate = { clicked: true }
         var response = await query(queryUtils.update_clicked_url(url), objectToUpdate)
         response = utils.query_respose_to_json(response)
-        
+
         res.status(200).send(response)
     }
 })
 
 router.get('/configured', [auth_apikey], async (req, res) => {
     var query = queryUtils.get_animes_configured;
-    const {currentPage, itemsPerPage, title} = req.query
-    if(title) {
+    const { currentPage, itemsPerPage, title } = req.query
+    if (title) {
         query = `${query} WHERE a.title LIKE '%${title}%'`
     }
     var resp = await utils.paginated_query(query, itemsPerPage, currentPage)
-    
+
     res.send(resp)
 })
 router.put('/configured/:id', [auth_apikey], async (req, res) => {
-    const {id} = req.params
-    const {enable} = req.body
-    if(enable == undefined){
-        message = {error:400, message: "body params is required"}
+    const { id } = req.params
+    const { enable } = req.body
+    if (enable == undefined) {
+        message = { error: 400, message: "body params is required" }
         res.status(400).send(message)
-    }else {
+    } else {
         const update_query = queryUtils.activate_desactivate_anime(id)
-        const body = {enable: enable}
+        const body = { enable: enable }
         response = await query(update_query, body)
         response = utils.query_respose_to_json(response)
-        if(response.affectedRows == 1){
-            res.status(200).send({status:"ok", message: "successfully updated"})
-        }else {
+        if (response.affectedRows == 1) {
+            res.status(200).send({ status: "ok", message: "successfully updated" })
+        } else {
             res.status(304).send(response)
         }
     }
 })
 
 router.delete('/delete/:id', [auth_apikey], async (req, res) => {
-    const {id} = req.params
+    const { id } = req.params
     const response = {}
-    if(id == undefined){
-        message = {error:400, message: "body params is required"}
+    if (id == undefined) {
+        message = { error: 400, message: "body params is required" }
         res.status(400).send(message)
-    }else {
+    } else {
         const delete_anime = queryUtils.delete_anime(id)
         try {
             response = await query(delete_anime)
         } catch (error) {
-            res.status(409).send({error: error})
+            res.status(409).send({ error: error })
         }
-        if(response.affectedRows == 1){
-            res.status(200).send({status:"ok", message: "record deleted"})
+        if (response.affectedRows == 1) {
+            res.status(200).send({ status: "ok", message: "record deleted" })
         }
     }
 })
