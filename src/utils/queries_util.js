@@ -208,6 +208,10 @@ const insert_enabled_anime = () => {
     return `INSERT INTO ${SCHEMAS.scraping}.anime SET ?`
 }
 
+const update_enabled_anime = (id) => {
+    return `UPDATE ${SCHEMAS.scraping}.anime SET ? WHERE id = '${id}'`
+}
+
 const get_enabled_anime_by_url = (value) => {
     return `${select_anime_scraping} WHERE a.url LIKE '${value}'`
 }
@@ -350,5 +354,6 @@ module.exports = {
     select_7_days_dollar_value,
     select_7_days_uf_value,
     select_30_days_dollar_value,
-    delete_anime
+    delete_anime,
+    update_enabled_anime
 }

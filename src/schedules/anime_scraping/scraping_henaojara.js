@@ -34,6 +34,22 @@ router.post('/scraping/new_scraping', [auth_apikey], async (req, res) => {
     }
 })
 
+router.put('/scraping/modify/scraping/:id', [auth_apikey], async (req, res) => {
+    const {id} = req.params
+    const { title, url } = req.body
+    try {
+        var find_configured_anime = await query(queryUtils.get_enabled_anime_by_url(url))
+        find_configured_anime = utils.query_respose_to_json(find_configured_anime)
+        if (!find_configured_anime[0]) {
+            const object_to_save = { title: `${title}`, url: `${url}`, enable: true }
+            await query(queryUtils.update_enabled_anime(id), object_to_save)
+            res.status(201).send({ message: `scraping modified`, title: `${title}`, url: `${url}` })
+        } else res.status(400).send({ message: `this anime is already configured` })
+    } catch (error) {
+        res.status(400).send(error)
+    }
+})
+
 router.get('/scraping/configured', [auth_apikey], async (req, res) => {
     const { currentPage, itemsPerPage, animeName, clicked, season } = req.query
     var query = queryUtils.configured_anime_scraping
