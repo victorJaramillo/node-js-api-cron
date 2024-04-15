@@ -66,41 +66,79 @@ const scraping_series = async (url) => {
         })
         var seasons = []
         var respArray = []
-        $('.tvshows-template-default').each((i, ele) => {
-            const serie = $(ele).find('div.dtsingle')
-            var title = $(serie).find('div.data h1')
-            title = $(title).text()
-            const episodes = $(serie).find('div.sbox')
-            $(episodes).find('div.se-a .episodios li').each((index, chapter) => {
-                const cap_img = $(chapter).find('.imagen img.lazy').attr('data-src')
-                const cap_num = $(chapter).find('.numerando')
-                const cap_name = $(chapter).find('.episodiotitle a')
-                const cap_link = $(chapter).find('.episodiotitle a').attr('href')
-                var season_namber = $(cap_num).text().toString()
-                try {
-                    if (season_namber != '') {
 
-                        season_namber = season_namber.split('-')
-                        respArray.push(
-                            {
-                                title: title,
-                                season: parseInt(season_namber[0].trim()),
-                                chapter_name: $(cap_name).text(),
-                                chapter_number: parseInt(season_namber[1].trim()),
-                                chapter_image: cap_img,
-                                chapter_link: cap_link
-                            }
-                        )
-                        const elementExists = seasons.includes(parseInt(season_namber[0].trim()))
-                        if (!elementExists) seasons.push(parseInt(season_namber[0].trim()))
+        $('.main-episodies').each((i, ele) => {
+            const eps = $(ele).find('div.list-episodies-content')
+            $(eps).find('li').each((indx, elenet) => {
+                
+                const chap_link = $(elenet).find('a').attr('href')
+                var chap_name = $(elenet).find('a').attr('title')
+                const chap_img = $('figure img').attr('src')
+                var chap_num = $(elenet).find('a').text().trim().split(" ")
+                chap_num = parseInt(chap_num[(chap_num.length - 1)])
+                
+                respArray.push(
+                    {
+                        chapter_name: chap_name,
+                        chapter_number: chap_num,
+                        chapter_image: chap_img,
+                        chapter_link: chap_link
                     }
-                } catch (error) {
-                    console.error(error);
-                    utils.sendTextSlackNotification(error)
-                }
+                )
+                console.log('Scraping anime:', chap_name);
+
             })
-            console.log('Scraping anime:', title + ' - seasons:', seasons);
         })
+
+        // $('.allanimes').each((i, ele) => {
+        //     const eps = $(ele).find('div.row')
+        //     $(eps).find('div.col-item').each((indx, elenet) => {
+        //         const chap_link = $(elenet).find('a').attr('href')
+        //         var chap_name = $(elenet).find('p.animetitles')
+        //         chap_name = $(chap_name).text() 
+        //         const chap_img = $(elenet).find(' a div.animeimgdiv img').attr('data-src')
+        //         const chap_num = $(elenet).attr('data-episode')
+        //         respArray.push(
+        //             {
+        //                 chapter_name: chap_name,
+        //                 chapter_number: parseInt(chap_num.trim()),
+        //                 chapter_image: chap_img,
+        //                 chapter_link: chap_link
+        //             }
+        //         )
+        //         console.log('Scraping anime:', chap_name);
+        //     })
+
+            // const episodes = $(serie).find('div.sbox')
+            // $(episodes).find('div.se-a .episodios li').each((index, chapter) => {
+            //     const cap_img = $(chapter).find('.imagen img.lazy').attr('data-src')
+            //     const cap_num = $(chapter).find('.numerando')
+            //     const cap_name = $(chapter).find('.episodiotitle a')
+            //     const cap_link = $(chapter).find('.episodiotitle a').attr('href')
+            //     var season_namber = $(cap_num).text().toString()
+            //     try {
+            //         if (season_namber != '') {
+
+            //             season_namber = season_namber.split('-')
+            //             respArray.push(
+            //                 {
+            //                     title: title,
+            //                     season: parseInt(season_namber[0].trim()),
+            //                     chapter_name: $(cap_name).text(),
+            //                     chapter_number: parseInt(season_namber[1].trim()),
+            //                     chapter_image: cap_img,
+            //                     chapter_link: cap_link
+            //                 }
+            //             )
+            //             const elementExists = seasons.includes(parseInt(season_namber[0].trim()))
+            //             if (!elementExists) seasons.push(parseInt(season_namber[0].trim()))
+            //         }
+            //     } catch (error) {
+            //         console.error(error);
+            //         utils.sendTextSlackNotification(error)
+            //     }
+            // })
+        // })
         return respArray
     } catch (error) {
         console.log(error);
@@ -169,7 +207,7 @@ const getAbsentValues = (arr1, arr2) => {
 function buildObjectToSave(id, sc) {
     return {
         anime_id: id,
-        season: sc.season,
+        // season: sc.season,
         chapter_name: sc.chapter_name,
         chapter_number: sc.chapter_number,
         chapter_image: sc.chapter_image,
