@@ -40,7 +40,7 @@ router.put('/scraping/modify/scraping/:id', [auth_apikey], async (req, res) => {
     try {
         const object_to_save = { title: `${title}`, url: `${url}`, enable: true }
         await query(queryUtils.update_enabled_anime(id), object_to_save)
-        res.status(201).send({ message: `scraping modified`, title: `${title}`, url: `${url}` })
+        res.status(200).send({ message: `scraping modified`, title: `${title}`, url: `${url}` })
     } catch (error) {
         res.status(400).send(error)
     }
