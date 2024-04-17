@@ -283,7 +283,7 @@ const delete_anime = (id) => {
 } 
 
 const delete_scraping_anime = (id) => {
-    return `DELETE FROM web_scraping.anime_scraping anime_id = ${id}`
+    return `DELETE FROM web_scraping.anime_scraping WHERE anime_id=${id}`
 }
 
 
