@@ -280,8 +280,10 @@ router.delete('/delete/:id', [auth_apikey], async (req, res) => {
         message = { error: 400, message: "body params is required" }
         res.status(400).send(message)
     } else {
+        const delete_scraping_anime = queryUtils.delete_scraping_anime(id)
         const delete_anime = queryUtils.delete_anime(id)
         try {
+            response = await query(delete_scraping_anime)
             response = await query(delete_anime)
         } catch (error) {
             res.status(409).send({ error: error })

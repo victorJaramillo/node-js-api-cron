@@ -282,6 +282,11 @@ const delete_anime = (id) => {
     return `DELETE FROM web_scraping.anime WHERE id=${id}`
 } 
 
+const delete_scraping_anime = (id) => {
+    return `DELETE FROM web_scraping.anime_scraping anime_id = ${id}`
+}
+
+
 module.exports = {
     get_currconv_configs,
     get_available_configs,
@@ -355,5 +360,6 @@ module.exports = {
     select_7_days_uf_value,
     select_30_days_dollar_value,
     delete_anime,
+    delete_scraping_anime,
     update_enabled_anime
 }
