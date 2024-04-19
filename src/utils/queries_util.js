@@ -286,6 +286,11 @@ const delete_scraping_anime = (id) => {
     return `DELETE FROM web_scraping.anime_scraping WHERE anime_id=${id}`
 }
 
+const admin_get_dollar_values = 
+`SELECT usd.value AS value, usd.name AS name, DATE_FORMAT(usd.date , "%Y-%m-%d") AS date 
+    FROM 
+currencies.dollar_values usd`
+
 
 module.exports = {
     get_currconv_configs,
@@ -361,5 +366,8 @@ module.exports = {
     select_30_days_dollar_value,
     delete_anime,
     delete_scraping_anime,
-    update_enabled_anime
+    update_enabled_anime,
+
+    // ADMIN Currencies
+    admin_get_dollar_values
 }

@@ -14,6 +14,8 @@ var cron = require('node-cron');
 const CURRENCY_VALUES_TIME_STACK = process.env.CURRENCY_VALUES_TIME_STACK;
 const IS_PRODUCTION = JSON.parse(process.env.IS_PRODUCTION);
 
+const auth_apikey = require("../../middleware/auth_api_key.js");
+
 currencyRouter.get('/available/cl', async (req, res) => {
     task.start()
     const dollar_response = await query(queries_util.select_to_day_dollar_value)
@@ -77,5 +79,14 @@ const get_values = async () => {
     await query(queries_util.insert_uf_values, values_uf)
     return response
 }
+
+
+currencyRouter.get('/admin/currencies/values', [auth_apikey], async(req, res) => {
+    const { currentPage, itemsPerPage } = req.query
+    const query = queries_util.admin_get_dollar_values
+    console.log(query);
+    var resp = await utils.paginated_query(query, itemsPerPage, currentPage)
+    res.send(resp)
+})
 
 module.exports = currencyRouter
