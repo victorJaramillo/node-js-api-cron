@@ -84,7 +84,6 @@ const get_values = async () => {
 currencyRouter.get('/admin/currencies/values', [auth_apikey], async(req, res) => {
     const { currentPage, itemsPerPage } = req.query
     const query = queries_util.admin_get_dollar_values
-    console.log(query);
     var resp = await utils.paginated_query(query, itemsPerPage, currentPage)
     res.send(resp)
 })
