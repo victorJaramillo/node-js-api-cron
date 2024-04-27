@@ -87,5 +87,18 @@ currencyRouter.get('/admin/currencies/values', [auth_apikey], async(req, res) =>
     var resp = await utils.paginated_query(query, itemsPerPage, currentPage)
     res.send(resp)
 })
+currencyRouter.patch('/admin/currencies/values', [auth_apikey], async(req, res) => {
+    const { id } = req.query
+    const { value } = req.body
+    const update = queries_util.update_dollar_value(id)
+    var response = {}
+    try {
+        response = query(update, {value: parseFloat(value)})
+        res.status(200).send({message: 'ok', details: response})
+    } catch (error) {
+        res.status(400).send({message: 'error', details: error})
+    }
+
+})
 
 module.exports = currencyRouter

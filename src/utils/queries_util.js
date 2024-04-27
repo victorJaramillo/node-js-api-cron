@@ -292,6 +292,10 @@ const admin_get_dollar_values =
 currencies.dollar_values usd ORDER BY usd.date DESC`
 
 
+const update_dollar_value = (id) => {
+    return `UPDATE currencies.dollar_values SET ? WHERE id = ${id}`
+}
+
 module.exports = {
     get_currconv_configs,
     get_available_configs,
@@ -369,5 +373,6 @@ module.exports = {
     update_enabled_anime,
 
     // ADMIN Currencies
-    admin_get_dollar_values
+    admin_get_dollar_values,
+    update_dollar_value
 }
