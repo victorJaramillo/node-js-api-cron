@@ -61,7 +61,7 @@ const ipScanner = async () => {
                             utils.sendNewIpSlackNotification(public_ip).then((message) => {
                                 console.log(message);
                             });
-                            update_godaddy_records(public_ip);
+                            //update_godaddy_records(public_ip);
                         }
                     });
                 } else {
