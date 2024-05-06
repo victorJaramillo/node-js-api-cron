@@ -287,7 +287,7 @@ const delete_scraping_anime = (id) => {
 }
 
 const admin_get_dollar_values = 
-`SELECT usd.value AS value, usd.name AS name, DATE_FORMAT(usd.date , "%Y-%m-%d") AS date 
+`SELECT usd.id AS id, usd.value AS value, usd.name AS name, DATE_FORMAT(usd.date , "%Y-%m-%d") AS date 
     FROM 
 currencies.dollar_values usd ORDER BY usd.date DESC`
 
