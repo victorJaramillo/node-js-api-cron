@@ -219,6 +219,10 @@ const godaddy_url = function (url, dns) {
     return url.replace('{dns}', dns);
 }
 
+const build_cloudflare_url = function (url, zone_id) {
+    return url.replace('{zone_id}', zone_id);
+}
+
 const buildGodaddyUrl = (url, arr) => {
     arr.forEach(element => {
         url = url+`/${element}`
@@ -244,6 +248,7 @@ const select_godaddy_records = `SELECT * FROM server_config.developer_api_keys W
 
 const select_enabled_services = `SELECT service_name FROM server_config.enabled_services`;
 
+const select_cloudflare_records = `SELECT * FROM server_config.api_cloudflare WHERE stage = 'PROD'`;
 
 const find_user = function (email) {
     return `SELECT * FROM server_config.api_users WHERE email = '${email}'`;
@@ -323,6 +328,7 @@ module.exports = {
     config_server_select_by_ip,
     update_lp_videos,
     godaddy_url,
+    build_cloudflare_url,
     get_external_api,
     get_external_api_with_security,
     put_external_api_with_security,
@@ -350,5 +356,6 @@ module.exports = {
     validate_bcript,
     query_respose_to_json,
     sendNewAnimeNotification,
-    paginated_query
+    paginated_query,
+    select_cloudflare_records
 };

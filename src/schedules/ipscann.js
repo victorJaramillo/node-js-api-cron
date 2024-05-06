@@ -61,7 +61,7 @@ const ipScanner = async () => {
                             utils.sendNewIpSlackNotification(public_ip).then((message) => {
                                 console.log(message);
                             });
-                            //update_godaddy_records(public_ip);
+                            update_cloudflare_records(public_ip);
                         }
                     });
                 } else {
@@ -101,6 +101,45 @@ const update_godaddy_records = function (new_ip) {
                             }
                         });
                     }
+                    response = (array_dns_records);
+                })
+            });
+
+        }
+    });
+    return response
+}
+const update_cloudflare_records = function (new_ip) {
+    var response = {};
+    mysqlConnection.query(utils.select_cloudflare_records, (error, results) => {
+        if (error) throw error;
+        else {
+            const { url, auth, zone_id } = results[0];
+            const dns_records_endoint = utils.build_cloudflare_url(url, zone_id)
+            const authorization = `${auth}`;
+            utils.get_external_api_with_security(dns_records_endoint, authorization).then((array_dns_records) => {
+                mysqlConnection.query(utils.select_enabled_services, (error, results) => {
+                    Object.keys(results).forEach( (data) => {
+                        for (const element of array_dns_records.result) {
+                            if (element.name === results[data].service_name) {
+                                element.content = new_ip
+
+                                const dns_record = { "content": new_ip, "proxied": false, "name": element.name, "type": "A", "comment": null, "tags": [], "ttl": 1 }
+
+                                if (JSON.parse(IS_PRODUCTION)) {
+                                    utils.put_external_api_with_security(`${dns_records_endoint}/${element.id}`, dns_record, authorization).then((res, err) => {
+                                        if (err) { throw err }
+                                        else {
+                                            const msg = `La ip del DNS: ${results[data].service_name}, se actualizó correctamente, status: ${res}`;
+                                            console.log(msg);
+                                            utils.sendTextSlackNotification(msg)
+                                        }
+                                    });
+                                }
+                                break;
+                            }
+                        }
+                    })
                     response = (array_dns_records);
                 })
             });
