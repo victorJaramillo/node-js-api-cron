@@ -1,0 +1,17 @@
+stages:          # List of stages for jobs, and their order of execution
+  - build
+  #- test
+  #- deploy
+
+workflow:
+  rules:
+    - changes:
+      - src/**/*
+      - package.json
+      - package-lock.json
+
+
+include:
+  - project: zs/devops
+    ref: master
+    file: pipeline/dind/dind.gitlab-ci.yml
