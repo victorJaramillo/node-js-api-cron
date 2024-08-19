@@ -1,4 +1,5 @@
 variables:
+  DOCKER_DRIVER: overlay2
   DOCKER_HOST: tcp://localhost:2375
 
 stages:          # List of stages for jobs, and their order of execution
