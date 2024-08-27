@@ -19,4 +19,4 @@ workflow:
 include:
   - project: zs/devops
     ref: master
-    file: pipeline/dind/dind2.gitlab-ci.yml
+    file: pipeline/dind/dind-k8s.gitlab-ci.yml
