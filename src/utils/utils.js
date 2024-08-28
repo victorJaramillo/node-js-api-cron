@@ -16,7 +16,7 @@ var getNewPublicIp = async function () {
 }
 
 const sendNewIpSlackNotification = async function (ip) {
-    var response = {};
+    let response = {};
     const text = `Se ha cambiado la ip publica del servidor, la nueva IP es *${ip}*`;
     await axios.post(process.env.SLACK_WEBHOOK, {
         text: 'Nueva IP de servidor',
@@ -38,7 +38,7 @@ const sendNewIpSlackNotification = async function (ip) {
 }
 
 const sendTextSlackNotification = async function (text) {
-    var response = {};
+    let response = {};
     await axios.post(process.env.SLACK_WEBHOOK, {
         text: text
     }).then(res => {
@@ -50,7 +50,7 @@ const sendTextSlackNotification = async function (text) {
 }
 
 const sendTextAndImageSlackNotification = async function (title, desc, date, quality, image_url, vote, link) {
-    var response = {};
+    let response = {};
     const body = get_body_message(title, desc, date, quality, vote, link, image_url);
     await axios.post(process.env.SLACK_WEBHOOK_WEB_SCRAPING,
         body
@@ -63,7 +63,7 @@ const sendTextAndImageSlackNotification = async function (title, desc, date, qua
 }
 
 const sendNewAnimeNotification = async function (title, desc, image_url, link) {
-    var response = {};
+    let response = {};
     const body = get_body_message(title, desc, '', '', '', link, image_url);
     await axios.post(process.env.SLACK_ANIME_NOTIFICATION,
         body
@@ -80,7 +80,7 @@ const slack_message_response = function (statusCode) {
 }
 
 const get_external_api = async function (endpoint) {
-    var response = {};
+    let response = {};
     await axios.get(endpoint).then((resp) => {
         response = resp;
     }).catch(err => {
@@ -90,7 +90,7 @@ const get_external_api = async function (endpoint) {
 }
 
 const post_external_api = async function (endpoint) {
-    var response = {};
+    let response = {};
     await axios.get(endpoint).then((resp) => {
         response = resp;
     }).catch(err => {
@@ -100,9 +100,9 @@ const post_external_api = async function (endpoint) {
 }
 
 const get_external_api_with_security = async function (endpoint, key, key_name) {
-    var response = {};
+    let response = {};
     console.log(key_name === undefined);
-    key_name === undefined ? key_name = 'Authorization' : key_name = key_name;
+    key_name === undefined ? key_name = 'Authorization' : key_name = `${key_name}`;
     await axios.get(endpoint, { headers: { 'Authorization': key } }).then((resp) => {
         response = resp.data;
     }).catch(err => {
@@ -112,7 +112,7 @@ const get_external_api_with_security = async function (endpoint, key, key_name) 
 }
 
 const put_external_api_with_security = async function (endpoint, body, key) {
-    var response = {};
+    let response = {};
     await axios.put(endpoint, body, { headers: { 'Authorization': key } }).then((resp) => {
 
         response = resp.status;
@@ -123,7 +123,7 @@ const put_external_api_with_security = async function (endpoint, body, key) {
 }
 
 const patch_external_api_with_security = async function (endpoint, body, key) {
-    var response = {};
+    let response = {};
     await axios.patch(endpoint, body, { headers: { 'Authorization': key } }).then((resp) => {
         response = resp.status;
     }).catch(err => {
@@ -134,7 +134,7 @@ const patch_external_api_with_security = async function (endpoint, body, key) {
 }
 
 const delete_external_api_with_security = async function (endpoint, key) {
-    var response = {};
+    let response = {};
     await axios.delete(endpoint, { headers: { 'Authorization': key } }).then((resp) => {
         response = resp.status;
     }).catch(err => {
@@ -255,9 +255,9 @@ const find_user = function (email) {
 }
 
 const UUID = () => {
-    var dt = new Date().getTime();
-    var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-        var r = (dt + Math.random() * 16) % 16 | 0;
+    let dt = new Date().getTime();
+    let uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        let r = (dt + Math.random() * 16) % 16 | 0;
         dt = Math.floor(dt / 16);
         return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
     });
@@ -293,7 +293,7 @@ const decode_base64 = (value) => {
 }
 
 const validate_bcript = async (text, hashed_test) => {
-    var valid = await bcrypt.compare(text, hashed_test)
+    let valid = await bcrypt.compare(text, hashed_test)
     return valid
 }
 
