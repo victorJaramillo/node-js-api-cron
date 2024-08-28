@@ -3,8 +3,8 @@
 #  DOCKER_HOST: tcp://localhost:2375
 
 stages:          # List of stages for jobs, and their order of execution
-  - build
   - test
+  - build
   #- deploy
   - push
 
