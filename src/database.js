@@ -48,12 +48,12 @@ let query = function( sql, values ) {
 }
 
 const paginate = (query, options)  => {
-  var origQuery = query;
-  var skipFrom, sortBy, columns;
+  let origQuery = query;
+  let skipFrom, sortBy, columns;
   columns = options.columns || null;
   sortBy = options.sortBy || null;
-  var pageNumber = 1;
-  var resultsPerPage = 10;
+  let pageNumber = 1;
+  let resultsPerPage = 10;
   if(options.limit && !isNaN(options.limit)){
     resultsPerPage = options.limit;
   }
@@ -79,10 +79,10 @@ const paginate = (query, options)  => {
         if(err){
           return reject(err);
         } 
-        var total = rows2.length != 0 ? (undefined == rows2[0].total ? rows2.length : rows2[0].total) : 0;
-        var items = rows.length;
-        var pages = Math.ceil(total/items)
-        var json = { 
+        let total = rows2.length != 0 ? (undefined == rows2[0].total ? rows2.length : rows2[0].total) : 0;
+        let items = rows.length;
+        let pages = Math.ceil(total/items)
+        let json = { 
           currentPage: Number.parseInt(pageNumber),
           totalPages: pages,
           itemsPerPage: items,
