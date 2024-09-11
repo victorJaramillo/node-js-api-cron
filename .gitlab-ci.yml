@@ -22,4 +22,4 @@ include:
   #  file: pipeline/sonarqube/sonarqube.gitlab-ci.yml
   - project: zs/devops
     ref: master
-    file: pipeline/dind/dind-k8s.gitlab-ci.yml
+    file: pipeline/dind/dind-k8s-2.gitlab-ci.yml
