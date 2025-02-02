@@ -1,0 +1,25 @@
+#variables:
+#  DOCKER_DRIVER: overlay2
+#  DOCKER_HOST: tcp://localhost:2375
+
+stages:          # List of stages for jobs, and their order of execution
+  - test
+  - build
+  #- deploy
+  - push
+
+workflow:
+  rules:
+    - changes:
+      - src/**/*
+      - package.json
+      - package-lock.json
+
+
+include:
+  #- project: zs/devops
+  #  ref: master
+  #  file: pipeline/sonarqube/sonarqube.gitlab-ci.yml
+  - project: zs/devops
+    ref: master
+    file: pipeline/dind/dind-k8s-2.gitlab-ci.yml
