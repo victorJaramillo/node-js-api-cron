@@ -28,7 +28,7 @@ const task = cron.schedule(`*/${WEB_SCRAPING_TIME_STACK} * * * *`, () => {
     console.log('Is production process? => ',IS_PRODUCTION);
     if(IS_PRODUCTION){
         // scraping_cuevana_movies()
-        scraping_pelis_panda()
+        //scraping_pelis_panda()
     }
     console.log(`Web Scraping excecution date ${today.toISOString()}`);
 })

@@ -204,7 +204,7 @@ async function get_hashed_user(body) {
 }
 
 const config_server_select_by_ip = function (ip) {
-    return config_server_select + ` WHERE public_ip ='${ip}'`
+    return  `${config_server_select} WHERE public_ip ='${ip}' AND changed_ip = false`
 }
 
 const updated_ip_configuration = function (ip) {

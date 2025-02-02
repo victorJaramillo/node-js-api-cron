@@ -74,7 +74,7 @@ const ipScanner = async () => {
 }
 
 const update_godaddy_records = function (new_ip) {
-    var response = {};
+    let response = {};
     mysqlConnection.query(utils.select_godaddy_records, (error, results) => {
         if (error) throw error;
         else {
@@ -110,7 +110,7 @@ const update_godaddy_records = function (new_ip) {
     return response
 }
 const update_cloudflare_records = function (new_ip) {
-    var response = {};
+    let response = {};
     mysqlConnection.query(utils.select_cloudflare_records, (error, results) => {
         if (error) throw error;
         else {
