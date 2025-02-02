@@ -204,11 +204,19 @@ async function get_hashed_user(body) {
 }
 
 const config_server_select_by_ip = function (ip) {
-    return  `${config_server_select} WHERE public_ip ='${ip}' AND changed_ip = false`
+    return  `${config_server_select} WHERE public_ip ='${ip}' AND previous_public_ip != '${ip}'`
+}
+
+const config_server_get_previous_ip = function (ip) {
+    return  `SELECT * FROM server_config.public_ip ORDER BY id DESC LIMIT 1 OFFSET 0`
 }
 
 const updated_ip_configuration = function (ip) {
     return `UPDATE server_config.public_ip SET ? WHERE public_ip.public_ip = '${ip}'`
+}
+
+const updated_last_ip_configuration_by_id = function (id) {
+    return `UPDATE server_config.public_ip SET ? WHERE id = ${id}`
 }
 
 const update_lp_videos = function (id) {
@@ -325,7 +333,9 @@ module.exports = {
     getNewPublicIp,
     sendNewIpSlackNotification,
     updated_ip_configuration,
+    updated_last_ip_configuration_by_id,
     config_server_select_by_ip,
+    config_server_get_previous_ip,
     update_lp_videos,
     godaddy_url,
     build_cloudflare_url,

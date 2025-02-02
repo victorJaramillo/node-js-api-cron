@@ -36,7 +36,6 @@ const task = cron.schedule(`*/${SCHEDULED_TIME_STACK} * * * *`, () => {
 
 const ipScanner = async () => {
     console.log(`running a task every ${SCHEDULED_TIME_STACK} minutes`);
-    public_url_images()
     const timeElapsed = Date.now();
     const today = new Date(timeElapsed);
     if (JSON.parse(IS_PRODUCTION)) {
@@ -45,25 +44,30 @@ const ipScanner = async () => {
             mysqlConnection.query(utils.config_server_select_by_ip(public_ip), (error, result) => {
                 if (error) throw error;
                 if (result.length === 0) {
-                    const values = {
-                        "public_ip": ip.public_ip,
-                        "last_update": new Date(),
-                        "previous_public_ip": ip.public_ip,
-                        "changed_ip": false
-                    };
-                    mysqlConnection.query(utils.insert_ip_configuration, values, (error) => {
-                        if (error) {
-                            utils.sendNewIpSlackNotification(error);
-                            throw error;
-                        }
-                        else {
-                            console.log({ 'message': 'field inserted successfully' });
-                            utils.sendNewIpSlackNotification(public_ip).then((message) => {
-                                console.log(message);
-                            });
-                            update_cloudflare_records(public_ip);
-                        }
-                    });
+                    
+                    mysqlConnection.query(utils.config_server_get_previous_ip(), (error, result) => {
+                        const last_ip = utils.query_respose_to_json(result)[0];
+                        
+                        const values = {
+                            "public_ip": public_ip,
+                            "last_update": new Date(),
+                            "previous_public_ip": last_ip.public_ip,
+                            "changed_ip": false
+                        };
+                        mysqlConnection.query(utils.insert_ip_configuration, values, (error) => {
+                            if (error) {
+                                utils.sendNewIpSlackNotification(error);
+                                throw error;
+                            }
+                            else {
+                                console.log({ 'message': 'field inserted successfully' });
+                                utils.sendNewIpSlackNotification(public_ip).then((message) => {
+                                    console.log(message);
+                                });
+                                update_cloudflare_records(public_ip);
+                            }
+                        });
+                    })
                 } else {
                     console.log(`Se mantiene la IP actual del servidor => ${public_ip}`);
                 }
